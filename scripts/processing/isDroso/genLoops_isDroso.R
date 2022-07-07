@@ -5,26 +5,19 @@
 
 ## load package
 library(hictoolsr)
-library(data.table)
-library(tidyverse)
-library(InteractionSet)
+library(glue)
 library(dbscan)
 
 # for merging loops -----------------------------
-loop_files <- c("data/hic/isDroso_loops/cont/5kbLoops.txt",
-                "data/hic/isDroso_loops/sorb/5kbLoops.txt",
-                "data/hic/isDroso_loops/omega/5kbLoops-omega.txt")
+cond <- c("cont", "sorb", "omega")
+loop_files <- list.files(path = glue("data/raw/hic/hg38/sip-loops/isDroso/{cond}"), full.names = T, pattern = "5kbLoops")
 
 # for extracting counts -----------------------------
-hic_files <- c("data/hic/dietJuicerCore/cont/YAPP_HEK_control_1_inter_30.hic",
-               "data/hic/dietJuicerCore/cont/YAPP_HEK_control_2_inter_30.hic",
-               "data/hic/dietJuicerCore/cont/YAPP_HEK_control_3_inter_30.hic",
-               "data/hic/dietJuicerCore/sorb/YAPP_HEK_sorbitol_4_inter_30.hic",
-               "data/hic/dietJuicerCore/sorb/YAPP_HEK_sorbitol_5_inter_30.hic",
-               "data/hic/dietJuicerCore/sorb/YAPP_HEK_sorbitol_6_inter_30.hic")
+hic_files <- list.files(path = glue("data/raw/hic/hg38/220627_dietJuicerCore/{cond}"), full.names = T)
 
 # merge / extract -----------------------------
-loopCounts <- mergeBedpe(bedpeFiles = loop_files,
+loopCounts <- 
+  mergeBedpe(bedpeFiles = loop_files,
                          res = 10000,
                          selectCol = 12,
                          dist_method = "manhattan",
@@ -37,8 +30,8 @@ loopCounts <- mergeBedpe(bedpeFiles = loop_files,
   extractCounts(hic = hic_files,
               chroms = c(1:22, "X", "Y"),
               res = 10e3,
-              norm = "NONE",
+              norm = "KR",
               matrix = "observed")
 
 # save data -----------------------------
-save(loopCounts, file = "data/output/hic/isDroso/loopCounts.rda")
+save(loopCounts, file = "data/processed/hic/isDroso/loopCounts.rda")

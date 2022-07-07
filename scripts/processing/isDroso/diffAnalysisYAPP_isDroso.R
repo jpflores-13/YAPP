@@ -2,39 +2,38 @@
 ## use DESeq2 to call differential loops 
 
 library(DESeq2)
-library(tidyverse)
+library(dplyr)
+library(glue)
+library(stringr)
+library(purrr)
 
 ## construct your matrix
 #rows = loops
 #cols = samples
 
-
 # Load Data--------------
-load("data/output/hic/isDroso/loopCounts.rda")
+load("data/processed/hic/isDroso/loopCounts.rda")
 
 # Add a loop_count column --------------
-loopCounts$loop_name <- paste0("loop_", 1:length(loopCounts))
+loopCounts$loop_name <- glue("loop_", "{1:length(loopCounts)}")
 
 # Create a matrix --------------
 m <- mcols(loopCounts)[, grep("*inter.*", colnames(mcols(loopCounts)))] %>% 
   as.matrix()
 
 # Change colnames  --------------
-colnames(m) <- c("YAPP_HEK_control_1_inter_30.hic",
-                 "YAPP_HEK_control_2_inter_30.hic",
-                 "YAPP_HEK_control_3_inter_30.hic",
-                 "YAPP_HEK_sorbitol_4_inter_30.hic",
-                 "YAPP_HEK_sorbitol_5_inter_30.hic",
-                 "YAPP_HEK_sorbitol_6_inter_30.hic")
+rep <- rep(1:3, times = 2)
+cond <- rep(c("control", "sorbitol"), each = 3)
+colnames(m) <- c(glue("YAPP_HEK_{cond}_{rep}_inter_30.hic"))
 
 # Assign rownames  --------------
-rownames(m) <- paste0(loopCounts$loop_name)
+rownames(m) <- glue("{loopCounts$loop_name}")
 
 #construct your colData  --------------
 
 # String split the colnames --------------
 
-colData <- as.data.frame(do.call(rbind, strsplit(colnames(m), "_")))
+colData <- as.data.frame(do.call(rbind, strsplit(colnames(m), "_")), stringsAsFactors = T)
 
 rownames(colData) <- colnames(m)
 
@@ -50,8 +49,9 @@ colData <- colData |>
   mutate(Replicate = str_replace(Replicate, "4", "1")) |> 
   mutate(Replicate = str_replace(Replicate, "5", "2")) |> 
   mutate(Replicate = str_replace(Replicate, "6", "3"))
-  
 
+levels(colData$Replicate)
+  
 ## DESeq2 analysis
 
 dds <- DESeqDataSetFromMatrix(countData = m,
@@ -67,10 +67,6 @@ res <- results(dds)
 
 resultsNames(dds)
 # res <- lfcShrink(dds, coef="Treatment_sorbitol_vs_control", type= "apeglm")
-# From Andrea ---------------------
-# p = 0.05
-# L = 0
-# sig_LRT <- res[which(res$padj < p & abs(res$log2FoldChange) >= L),]
 
 summary(res)
 pdf(file = "plots/YAPP_diffLoops_sorb_MA_isDroso_betaPriorT.pdf")
