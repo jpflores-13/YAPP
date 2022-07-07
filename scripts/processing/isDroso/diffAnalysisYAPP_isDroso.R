@@ -40,18 +40,10 @@ rownames(colData) <- colnames(m)
 ## colData should be a dataframe
 ## colnames(m) should be your rownames 
 
-colData <- colData[, c(1, 2, 3, 4)]
+colData <- colData[, c(1:4)]
 
 colnames(colData) <- c("Project", "Cell_Type", "Treatment", "Replicate")
 
-# Specify Accurate Replicate Numbers  --------------
-colData <- colData |> 
-  mutate(Replicate = str_replace(Replicate, "4", "1")) |> 
-  mutate(Replicate = str_replace(Replicate, "5", "2")) |> 
-  mutate(Replicate = str_replace(Replicate, "6", "3"))
-
-levels(colData$Replicate)
-  
 ## DESeq2 analysis
 
 dds <- DESeqDataSetFromMatrix(countData = m,
