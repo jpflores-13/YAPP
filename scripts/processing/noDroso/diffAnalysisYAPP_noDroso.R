@@ -65,5 +65,5 @@ all(rownames(res) == loopCounts$loop_name)
 mcols(loopCounts) <- cbind(mcols(loopCounts), res)
 diff_loopCounts <- loopCounts
 
-save(diff_loopCounts, file = "data/output/hic/noDroso/diff_loopCounts.rda")
+save(diff_loopCounts, file = "data/processed/hic/noDroso/diff_loopCounts.rda")
 
