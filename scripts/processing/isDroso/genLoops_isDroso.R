@@ -30,7 +30,7 @@ loopCounts <-
   extractCounts(hic = hic_files,
               chroms = c(1:22, "X", "Y"),
               res = 10e3,
-              norm = "KR",
+              norm = "NONE",
               matrix = "observed")
 
 # save data -----------------------------
