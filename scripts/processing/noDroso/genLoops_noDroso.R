@@ -5,33 +5,23 @@
 
 ## load package
 library(hictoolsr)
-library(data.table)
-library(tidyverse)
-library(InteractionSet)
+library(glue)
 library(dbscan)
 
 # for merging loops -----------------------------
-loop_files <- c("data/hic/noDroso/cont/loops/5kbLoops.txt",
-                "data/hic/noDroso/sorb/loops/5kbLoops.txt",
-                "data/hic/noDroso/cont/loops/5kbLoops-omega.txt")
-
-
-# "data/hic/noDroso/cont/loops/5kbLoops-omega.txt"
+cond <- c("cont", "sorb", "omega")
+loop_files <- list.files(path = glue("data/raw/hic/hg38/sip-loops/noDroso/{cond}"), full.names = T, pattern = "5kbLoops")
 
 # for extracting counts -----------------------------
-hic_files <- c("data/hic/noDroso/cont/YAPP_HEK_control_1_inter_30.hic",
-               "data/hic/noDroso/cont/YAPP_HEK_control_2_inter_30.hic",
-               "data/hic/noDroso/cont/YAPP_HEK_control_3_inter_30.hic",
-               "data/hic/noDroso/sorb/YAPP_HEK_sorbitol_4_inter_30.hic",
-               "data/hic/noDroso/sorb/YAPP_HEK_sorbitol_5_inter_30.hic",
-               "data/hic/noDroso/sorb/YAPP_HEK_sorbitol_6_inter_30.hic")
+hic_files <- list.files(path = glue("data/raw/hic/hg38/220627_dietJuicerCore/{cond}"), full.names = T)
 
 # merge / extract -----------------------------
-loopCounts <- mergeBedpe(bedpeFiles = loop_files,
-                         res = 10000,
-                         selectCol = 12,
-                         dist_method = "manhattan",
-                         minPts = 2) |> 
+loopCounts <- 
+  mergeBedpe(bedpeFiles = loop_files,
+             res = 10000,
+             selectCol = 12,
+             dist_method = "manhattan",
+             minPts = 2) |> 
   as_ginteractions() |> 
   binBedpe(res = 10e3, 
            a1Pos = "center", 
@@ -44,5 +34,4 @@ loopCounts <- mergeBedpe(bedpeFiles = loop_files,
                 matrix = "observed")
 
 # save data -----------------------------
-save(loopCounts, file = "data/output/noDroso/loopCounts.rda")
-loopCounts
+save(loopCounts, file = "data/processed/hic/noDroso/loopCounts.rda")
