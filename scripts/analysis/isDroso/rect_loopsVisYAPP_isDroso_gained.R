@@ -11,8 +11,7 @@ library(hictoolsr)
 library(InteractionSet)
 library(tidyverse)
 
-
-load("data/output/isDroso/diff_loopCounts.rda")
+load("data/processed/hic/isDroso/diff_loopCounts.rda")
 
 print(diff_loopCounts)
 
@@ -55,18 +54,19 @@ loopRegions_gained <- loopRegions_gained + buffer
 loopRegions_gained <- as.data.frame(loopRegions_gained)
 
 ## tidyverse
-# loopRegions_gained <- loopRegions_gained |>
-#   mutate(seqnames = str_remove(seqnames, "chr"))
+loopRegions_gained <- loopRegions_gained |>
+  mutate(seqnames = str_remove(seqnames, "chr"))
 
 # create omega loop list  -------------------------------------------------
 
-omega_loops <- c("data/hic/isDroso/sorb/loops/5kbLoops.txt",
-                "data/hic/isDroso/cont/loops/5kbLoops.txt")
+omega_loops <- c("data/raw/hic/hg38/sip-loops/isDroso/omega/5kbLoops.txt",
+                "data/raw/hic/hg38/sip-loops/isDroso/sorb/5kbLoops.txt",
+                "data/raw/hic/hg38/sip-loops/isDroso/cont/5kbLoops.txt")
 
-omega_loops <-
-  omega_loops |>
-  lapply(fread) |>
-  {\(x) do.call(rbind, x)}()
+# omega_loops <-
+#   omega_loops |>
+#   lapply(fread) |>
+#   {\(x) do.call(rbind, x)}()
 
 
 # get rid of 'chrom' ------------------------------------------------------
@@ -185,23 +185,23 @@ for(i in 1:nrow(loopRegions_gained)){
   # Begin Visualization -----------------------------------------------------
   ## Make page
   pageCreate(width = 7, height = 8,
-             xgrid = 0, ygrid = 0, showGuides = F)
+             xgrid = 0, ygrid = 0, showGuides = T)
   
   ## Plot top omega Hi-C rectangle + annotate
   top <- 
-    plotHicRectangle(data = "data/hic/isDroso/YAPP_HEK_inter_30.hic", 
+    plotHicRectangle(data = "data/raw/hic/hg38/220628_dietJuicerMerge_omega/YAPP_HEK_inter_30.hic", 
                   params = p,
                   y = 0.5)
   
   annoPixels(plot = top,
-             data = loop_files,
+             data = "data/raw/hic/hg38/sip-loops/isDroso/omega/5kbLoops.txt",
              type = "box",
              shift = 1)
   
   ## Plot middle Hi-C rectangle + SIP `-isDroso = TRUE` & `-isDroso = TRUE` calls 
   
   middle <-
-    plotHicRectangle(data = "data/hic/isDroso/cont/YAPP_HEK_control_inter_30.hic",
+    plotHicRectangle(data = "data/raw/hic/hg38/220628_dietJuicerMerge_condition/cont/YAPP_HEK_control_inter_30.hic",
                   params = p,
                   y = 2.75) 
   
@@ -221,7 +221,7 @@ for(i in 1:nrow(loopRegions_gained)){
   ## Plot bottom Hi-C rectangle + SIP `-isDroso = TRUE` & `-isDroso = TRUE` calls
   
   bottom <- 
-    plotHicRectangle(data = "data/hic/isDroso/sorb/YAPP_HEK_sorbitol_inter_30.hic", 
+    plotHicRectangle(data = "data/raw/hic/hg38/220628_dietJuicerMerge_condition/sorb/YAPP_HEK_sorbitol_inter_30.hic", 
                   params = p,
                   y = 5)
   
