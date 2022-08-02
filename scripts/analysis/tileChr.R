@@ -1,12 +1,6 @@
 ## Load libraries
 library(plotgardener)
-library(GenomicRanges)
-library(RColorBrewer)
-library(purrr)
-library(glue)
-library(colorspace)
 library(TxDb.Hsapiens.UCSC.hg38.knownGene)
-library(BiocParallel)
 
 # Set up tiles ------------------------------------------------------------
 
@@ -19,20 +13,20 @@ tile <-
 tile <- tile[seqnames(tile) == "chr1"]
 
 # Set-up params -----------------------------------------------------------
-pdf(file = "plots/tile_chr1.pdf",
-    width = 5.5,
+pdf(file = "plots/tiles/tile_chr1_YAPP_hic_SCALE.pdf",
+    width = 6,
     height = 7.5)
 
 for (i in seq_along(tile)){
   
   p <- pgParams(assembly = "hg38",
-                resolution = 5e3,
+                resolution = 10e3,
                 chrom = gsub('chr', '',
                              as.character(seqnames(tile)[i])),
                 chromstart = start(tile)[i],
                 chromend = end(tile)[i],
-                zrange = c(0,100),
-                norm = "KR",
+                zrange = c(0,50),
+                norm = "VC_SQRT",
                 x = 0.25,
                 width = 5,
                 length = 5,
@@ -44,22 +38,52 @@ for (i in seq_along(tile)){
   # Begin visualization -----------------------------------------------------
   
   ## Make page
-  pageCreate(width = 5.5, height = 7.5,
+  pageCreate(width = 6, height = 7.5,
              xgrid = 0, ygrid = 0, showGuides = F)
 
   
-  ## Plot Hi-C
+  ## Plot Hi-C maps & legends
   omega <- plotHicRectangle(data = "data/raw/hic/hg38/220628_dietJuicerMerge_omega/YAPP_HEK_inter_30.hic",
                             params = p,
-                            y = 0.5)
+                            y = 0.5) |> 
+    annoHeatmapLegend(orientation = "v",
+                      fontsize = 8,
+                      fontcolor = "black",
+                      digits = 2,
+                      x = 5.5,
+                      y = 0.5,
+                      width = 0.1,
+                      height = 1.5,
+                      just = c("left", "top"),
+                      default.units = "inches")
   
   cont <- plotHicRectangle(data = "data/raw/hic/hg38/220628_dietJuicerMerge_condition/cont/YAPP_HEK_control_inter_30.hic",
                            params = p,
-                           y = 2.5)
+                           y = 2.5) |> 
+    annoHeatmapLegend(orientation = "v",
+                      fontsize = 8,
+                      fontcolor = "black",
+                      digits = 2,
+                      x = 5.5,
+                      y = 2.5,
+                      width = 0.1,
+                      height = 1.5,
+                      just = c("left", "top"),
+                      default.units = "inches")
   
   sorb <- plotHicRectangle(data = "data/raw/hic/hg38/220628_dietJuicerMerge_condition/sorb/YAPP_HEK_sorbitol_inter_30.hic",
                            params = p,
-                           y = 4.5)
+                           y = 4.5) |> 
+    annoHeatmapLegend(orientation = "v",
+                      fontsize = 8,
+                      fontcolor = "black",
+                      digits = 2,
+                      x = 5.5,
+                      y = 4.5,
+                      width = 0.1,
+                      height = 1.5,
+                      just = c("left", "top"),
+                      default.units = "inches")
   
   ## Plot Gene Track
   plotGenes(params = p,
@@ -87,6 +111,7 @@ for (i in seq_along(tile)){
            x = 0.25,
            y = 4.5,
            just = c("top", "left"))
+  
 }
 
 dev.off()
