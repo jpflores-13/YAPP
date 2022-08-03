@@ -13,7 +13,7 @@ tile <-
 tile <- tile[seqnames(tile) == "chr1"]
 
 # Set-up params -----------------------------------------------------------
-pdf(file = "plots/tiles/tile_chr1_YAPP_hic_SCALE.pdf",
+pdf(file = "plots/YAPP_hic_SCALE_tile_chr1.pdf",
     width = 6,
     height = 7.5)
 
@@ -21,12 +21,11 @@ for (i in seq_along(tile)){
   
   p <- pgParams(assembly = "hg38",
                 resolution = 10e3,
-                chrom = gsub('chr', '',
-                             as.character(seqnames(tile)[i])),
+                chrom = as.character(seqnames(tile)[i]),
                 chromstart = start(tile)[i],
                 chromend = end(tile)[i],
                 zrange = c(0,50),
-                norm = "VC_SQRT",
+                norm = "SCALE",
                 x = 0.25,
                 width = 5,
                 length = 5,
@@ -43,7 +42,7 @@ for (i in seq_along(tile)){
 
   
   ## Plot Hi-C maps & legends
-  omega <- plotHicRectangle(data = "data/raw/hic/hg38/220628_dietJuicerMerge_omega/YAPP_HEK_inter_30.hic",
+  omega <- plotHicRectangle(data = "data/raw/hic/hg38/220716_dietJuicerMerge_omega/YAPP_HEK_inter_30.hic",
                             params = p,
                             y = 0.5) |> 
     annoHeatmapLegend(orientation = "v",
@@ -57,7 +56,7 @@ for (i in seq_along(tile)){
                       just = c("left", "top"),
                       default.units = "inches")
   
-  cont <- plotHicRectangle(data = "data/raw/hic/hg38/220628_dietJuicerMerge_condition/cont/YAPP_HEK_control_inter_30.hic",
+  cont <- plotHicRectangle(data = "data/raw/hic/hg38/220716_dietJuicerMerge_condition/cont/YAPP_HEK_control_inter_30.hic",
                            params = p,
                            y = 2.5) |> 
     annoHeatmapLegend(orientation = "v",
@@ -71,7 +70,7 @@ for (i in seq_along(tile)){
                       just = c("left", "top"),
                       default.units = "inches")
   
-  sorb <- plotHicRectangle(data = "data/raw/hic/hg38/220628_dietJuicerMerge_condition/sorb/YAPP_HEK_sorbitol_inter_30.hic",
+  sorb <- plotHicRectangle(data = "data/raw/hic/hg38/220716_dietJuicerMerge_condition/sorb/YAPP_HEK_sorbitol_inter_30.hic",
                            params = p,
                            y = 4.5) |> 
     annoHeatmapLegend(orientation = "v",

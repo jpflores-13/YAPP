@@ -50,7 +50,7 @@ plotDispEsts(dds)
 # QC via data visualization before moving on ------------------------------
 
 ## plot PCA
-pdf(file = "plots/YAPP_diffLoops_sorb_PCA_hic.pdf")
+pdf(file = "plots/YAPP_diffLoops_sorb_PCA_microc.pdf")
 plotPCA(vst(dds), intgroup = "Treatment") + ggplot2::theme(aspect.ratio = 1)
 dev.off()
 plotPCA(vst(dds), intgroup = "Treatment", returnData = TRUE)

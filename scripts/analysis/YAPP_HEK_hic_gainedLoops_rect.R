@@ -11,9 +11,9 @@ library(glue)
 library(dbscan)
 library(data.table)
 
-load("data/processed/hic/diff_loopCounts_bothDroso.rda")
+load("data/processed/hic/YAPP_hic_diff_loopCounts.rda")
 
-# Setting gained and lost loops -------------------------------------------
+# Setting static and lost loops -------------------------------------------
 
 ## all loops with a p-value > 0.05
 static <- subset(diff_loopCounts, pvalue > 0.05)
@@ -49,6 +49,7 @@ loopRegions_gained <- loopRegions_gained |>
 
 
 # create loop lists --------------------------------------------------------
+## Merge gained control loops from both `-isDroso true` & `-isDroso false`
 cont_isDroso_loops <- list.files(path = glue("data/raw/hic/hg38/sip-loops/isDroso/cont"),
                             full.names = T,
                             pattern = "5kbLoops")
@@ -57,12 +58,16 @@ cont_noDroso_loops <- list.files(path = glue("data/raw/hic/hg38/sip-loops/noDros
                             full.names = T,
                             pattern = "5kbLoops")
 
-cont_loops <- c(cont_noDroso_loops, cont_isDroso_loops) |> 
-  mergeBedpe(res = 1e4,
-             selectCol = 12,
-             dist_method = "manhattan",
-             minPts = 2)
+## Saved as RDS to speed-up analysis
+# cont_loops <- c(cont_noDroso_loops, cont_isDroso_loops) |>
+#   mergeBedpe(res = 10e3,
+#              selectCol = 12,
+#              dist_method = "manhattan",
+#              minPts = 2)
+# saveRDS(cont_loops, "data/processed/cont_bothDroso_loops")
+readRDS("data/processed/cont_bothDroso_loops")
 
+## Merge sorbitol loops from both `-isDroso true` & `-isDroso false`
 sorb_isDroso_loops <- list.files(path = "data/raw/hic/hg38/sip-loops/isDroso/sorb",
                                  full.names = T,
                                  pattern = "5kbLoops")
@@ -71,12 +76,16 @@ sorb_noDroso_loops <- list.files(path = "data/raw/hic/hg38/sip-loops/noDroso/sor
                                  full.names = T,
                                  pattern = "5kbLoops")
 
-sorb_loops <- c(sorb_isDroso_loops, sorb_noDroso_loops) |> 
-  mergeBedpe(res = 1e4,
-             selectCol = 12,
-             dist_method = "manhattan",
-             minPts = 2)
+## Saved as RDS to speed-up analysis
+# sorb_loops <- c(sorb_isDroso_loops, sorb_noDroso_loops) |>
+#   mergeBedpe(res = 10e3,
+#              selectCol = 12,
+#              dist_method = "manhattan",
+#              minPts = 2)
+# saveRDS(sorb_loops, "data/processed/sorb_bothDroso_loops")
+readRDS("data/processed/sorb_bothDroso_loops")
 
+## Merge omega loops form both `-isDroso true` & `-isDroso false`
 omega_isDroso_loops <- list.files(path = "data/raw/hic/hg38/sip-loops/isDroso/omega/",
                                  full.names = T,
                                  pattern = "5kbLoops")
@@ -85,33 +94,19 @@ omega_noDroso_loops <- list.files(path = "data/raw/hic/hg38/sip-loops/noDroso/om
                                  full.names = T,
                                  pattern = "5kbLoops")
 
-omega_loops <- c(omega_isDroso_loops, omega_noDroso_loops) |> 
-  mergeBedpe(res = 1e4,
-             selectCol = 12,
-             dist_method = "manhattan",
-             minPts = 2)
-
-
-## use tidyverse to remove `chr` pattern in chromosome{1,2} columns
-cont_loops <- 
-  cont_loops |> 
-  mutate(chromosome1 = str_remove(chromosome1, "chr"),
-         chromosome2 = str_remove(chromosome2, "chr"))
-
-sorb_loops <- 
-  sorb_loops |> 
-  mutate(chromosome1 = str_remove(chromosome1, "chr"),
-         chromosome2 = str_remove(chromosome2, "chr"))
-
-omega_loops <- 
-  omega_loops |> 
-  mutate(chromosome1 = str_remove(chromosome1, "chr"),
-         chromosome2 = str_remove(chromosome2, "chr"))
+## Saved as RDS to speed-up analysis
+# omega_loops <- c(omega_isDroso_loops, omega_noDroso_loops) |>
+#   mergeBedpe(res = 10e3,
+#              selectCol = 12,
+#              dist_method = "manhattan",
+#              minPts = 2)
+# saveRDS(omega_loops, "data/processed/omega_bothDroso_loops")
+readRDS("data/processed/omega_bothDroso_loops")
 
 # Create Survey Plots -----------------------------------------------------
 
 ##make pdf
-pdf(file = "plots/gainedLoops_hic_HEK.pdf",
+pdf(file = "plots/YAPP_HEK_hic_gainedLoops.pdf",
     width = 5.5,
     height = 8)
 
@@ -121,11 +116,11 @@ for(i in seq_along(loopRegions_gained)){
   ## Define parameters
   p <- pgParams(assembly = "hg38",
                 resolution = 10e3,
-                chrom = gsub('chr', '',loopRegions_gained$seqnames[i]),
+                chrom = paste0("chr",loopRegions_gained$seqnames[i]),
                 chromstart = loopRegions_gained$start[i],
                 chromend = loopRegions_gained$end[i],
                 zrange = c(0,100),
-                norm = "KR",
+                norm = "SCALE",
                 x = 0.25,
                 width = 5,
                 length = 5,
@@ -141,7 +136,7 @@ for(i in seq_along(loopRegions_gained)){
   
   ## Plot top omega Hi-C rectangle + annotate
   omega <- 
-    plotHicRectangle(data = "data/raw/hic/hg38/220628_dietJuicerMerge_omega/YAPP_HEK_inter_30.hic", 
+    plotHicRectangle(data = "data/raw/hic/hg38/220716_dietJuicerMerge_omega/YAPP_HEK_inter_30.hic", 
                   params = p,
                   y = 0.5) |> 
     annoPixels(data = omega_loops,
@@ -150,25 +145,24 @@ for(i in seq_along(loopRegions_gained)){
   ## Plot middle Hi-C rectangle + SIP `-isDroso = TRUE` & `-isDroso = TRUE` calls 
   
   control <-
-    plotHicRectangle(data = "data/raw/hic/hg38/220628_dietJuicerMerge_condition/cont/YAPP_HEK_control_inter_30.hic",
+    plotHicRectangle(data = "data/raw/hic/hg38/220716_dietJuicerMerge_condition/cont/YAPP_HEK_control_inter_30.hic",
                   params = p,
                   y = 2.75) |> 
-    annoPixels(control,
-               data = cont_loops,
+    annoPixels(data = cont_loops,
                shift = 1)
   
   ## Plot bottom Hi-C rectangle + SIP `-isDroso = TRUE` & `-isDroso = TRUE` calls
   
   sorb <- 
-    plotHicRectangle(data = "data/raw/hic/hg38/220628_dietJuicerMerge_condition/sorb/YAPP_HEK_sorbitol_inter_30.hic", 
+    plotHicRectangle(data = "data/raw/hic/hg38/220716_dietJuicerMerge_condition/sorb/YAPP_HEK_sorbitol_inter_30.hic", 
                   params = p,
                   y = 5) |> 
-    annoPixels(sorb, data = sorb_loops, 
+    annoPixels(data = sorb_loops, 
                shift = 1)
   
   ## Plot genes
   plotGenes(param = p,
-            chrom = paste0('chr', p$chrom),
+            chrom = p$chrom,
             x = 0.25,
             y = 7.25,
             height = 0.5)
