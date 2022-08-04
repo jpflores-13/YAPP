@@ -1,5 +1,5 @@
 
-## Lost differential loop visualizations (HiC rectangles)
+## Gained differential loop visualizations (HiC rectangles)
 
 
 # Load data ---------------------------------------------------------------
@@ -10,57 +10,52 @@ library(tidyverse)
 library(glue)
 library(dbscan)
 library(data.table)
+library(glue)
 
-load("data/processed/hic/YAPP_hic_diff_loopCounts.rda")
+load("data/processed/microc/YAPP_microc_diff_loopCounts.rda")
 
 # Setting static and lost loops -------------------------------------------
 
 ## all loops with a p-value > 0.05
 static <- subset(diff_loopCounts, pvalue > 0.05)
-static
 
-## lost loops are loops with a p-value < 0.05 and a (-) log2FoldChange
-lost <- subset(diff_loopCounts, pvalue <= 0.05 & log2FoldChange < 0)
-lost
+## gained loops are loops with a p-value < 0.05 and a (+) log2FC
+gained <- subset(diff_loopCounts, pvalue <= 0.05 & log2FoldChange > 0)
 
-# lost_adj <- subset(diff_loopCounts, padj < 0.1 & log2FoldChange < 0)
-# lost_adj
+## gained loops with a p-adj. value of < 0.1 and a (+) log2FC
+# gained_adj <- subset(diff_loopCounts, padj < 0.1 & log2FoldChange > 0)
+# gained_adj
 
-## filter for the best lost loops
-bestLost <- head(lost[order(lost_adj$log2FoldChange, decreasing = T)],100)
-bestLost <- head(lost[order(lost_adj$padj, decreasing = F)], 100)
-bestLost
+## filter for the 100 best gained loops
+bestGained <- head(gained[order(gained$log2FoldChange, decreasing = T)],100)
+bestGained <- head(gained[order(gained$padj, decreasing = F)], 100)
+bestGained
 
-# # all lost loops
-# loopRegions <-
-#   GRanges(seqnames = as.character(seqnames(anchors(x = lost, "first"))),
-#           ranges = IRanges(start = start(anchors(lost, 'first')),
-#                            end = end(anchors(lost, 'second'))))
+# top 100 gained loops
+## If the below function doesn't work, might need to use swapAchors()
 
-# top 50 lost loops
-# bestLost <- swapAnchors(bestLost)
-
-loopRegions_lost <- 
-  GRanges(seqnames = as.character(seqnames(anchors(x = bestLost, "first"))),
-          ranges = IRanges(start = start(anchors(bestLost, 'first')),
-                           end = end(anchors(bestLost, 'second'))))
+loopRegions_gained <- 
+  GRanges(seqnames = as.character(seqnames(anchors(x = bestGained, "first"))),
+          ranges = IRanges(start = start(anchors(bestGained, "first")),
+                           end = end(anchors(bestGained, "second"))))
 
 ## Expand regions by buffer
 buffer <- 200e3
-loopRegions_lost <- loopRegions_lost + buffer
-loopRegions_lost <- as.data.frame(loopRegions_lost)
+loopRegions_gained <- loopRegions_gained + buffer
+loopRegions_gained <- as.data.frame(loopRegions_gained)
 
 ## Use tidyverse to remove `chr`in seqnames
-loopRegions_lost <- loopRegions_lost |>
+loopRegions_gained <- loopRegions_gained |>
   mutate(seqnames = str_remove(seqnames, "chr"))
+
 
 # create loop lists --------------------------------------------------------
 ## Merge gained control loops from both `-isDroso true` & `-isDroso false`
-cont_isDroso_loops <- list.files(path = glue("data/raw/hic/hg38/sip-loops/isDroso/cont"),
+cont_isDroso_loops <- list.files(path = glue("data/raw/microc/hg38_220801/sip-loops/isDroso/cont"),
                                  full.names = T,
                                  pattern = "5kbLoops")
 
-cont_noDroso_loops <- list.files(path = glue("data/raw/hic/hg38/sip-loops/noDroso/cont"),
+cont_noDroso_loops <- list.files(path = glue("data/raw/microc/hg38_220801/sip-loops/noDroso/cont"),
                                  full.names = T,
                                  pattern = "5kbLoops")
 
@@ -70,15 +65,15 @@ cont_noDroso_loops <- list.files(path = glue("data/raw/hic/hg38/sip-loops/noDros
 #              selectCol = 12,
 #              dist_method = "manhattan",
 #              minPts = 2)
-# saveRDS(cont_loops, "data/processed/hic/cont_bothDroso_loops.rds")
-cont_loops <- readRDS("data/processed/hic/cont_bothDroso_loops.rds")
+# saveRDS(cont_loops, "data/processed/microc/cont_bothDroso_loops.rds")
+cont_loops <- readRDS("data/processed/microc/cont_bothDroso_loops.rds")
 
 ## Merge sorbitol loops from both `-isDroso true` & `-isDroso false`
-sorb_isDroso_loops <- list.files(path = "data/raw/hic/hg38/sip-loops/isDroso/sorb",
+sorb_isDroso_loops <- list.files(path = "data/raw/microc/hg38_220801/sip-loops/isDroso/sorb",
                                  full.names = T,
                                  pattern = "5kbLoops")
 
-sorb_noDroso_loops <- list.files(path = "data/raw/hic/hg38/sip-loops/noDroso/sorb",
+sorb_noDroso_loops <- list.files(path = "data/raw/microc/hg38_220801/sip-loops/noDroso/sorb",
                                  full.names = T,
                                  pattern = "5kbLoops")
 
@@ -88,15 +83,15 @@ sorb_noDroso_loops <- list.files(path = "data/raw/hic/hg38/sip-loops/noDroso/sor
 #              selectCol = 12,
 #              dist_method = "manhattan",
 #              minPts = 2)
-# saveRDS(sorb_loops, "data/processed/hic/sorb_bothDroso_loops.rds")
-sorb_loops <- readRDS("data/processed/hic/sorb_bothDroso_loops.rds")
+# saveRDS(sorb_loops, "data/processed/microc/sorb_bothDroso_loops.rds")
+sorb_loops <- readRDS("data/processed/microc/sorb_bothDroso_loops.rds")
 
 ## Merge omega loops form both `-isDroso true` & `-isDroso false`
-omega_isDroso_loops <- list.files(path = "data/raw/hic/hg38/sip-loops/isDroso/omega/",
+omega_isDroso_loops <- list.files(path = "data/raw/microc/hg38_220801/sip-loops/isDroso/omega/",
                                   full.names = T,
                                   pattern = "5kbLoops")
 
-omega_noDroso_loops <- list.files(path = "data/raw/hic/hg38/sip-loops/noDroso/omega/",
+omega_noDroso_loops <- list.files(path = "data/raw/microc/hg38_220801/sip-loops/noDroso/omega/",
                                   full.names = T,
                                   pattern = "5kbLoops")
 
@@ -106,25 +101,25 @@ omega_noDroso_loops <- list.files(path = "data/raw/hic/hg38/sip-loops/noDroso/om
 #              selectCol = 12,
 #              dist_method = "manhattan",
 #              minPts = 2)
-# saveRDS(omega_loops, "data/processed/hic/omega_bothDroso_loops.rds")
-omega_loops <- readRDS("data/processed/hic/omega_bothDroso_loops.rds")
+# saveRDS(omega_loops, "data/processed/microc/omega_bothDroso_loops.rds")
+omega_loops <- readRDS("data/processed/microc/omega_bothDroso_loops.rds")
 
 # Create Survey Plots -----------------------------------------------------
 
 ##make pdf
-pdf(file = "plots/YAPP_HEK_hic_lostLoops_rect.pdf",
+pdf(file = "plots/YAPP_HEK_microc_gainedLoops_rect.pdf",
     width = 5.5,
     height = 8)
 
 ## Loop through each region
-for(i in 1:nrow(loopRegions_lost)){
+for(i in 1:nrow(loopRegions_gained)){
   
   ## Define parameters
   p <- pgParams(assembly = "hg38",
                 resolution = 10e3,
-                chrom = paste0("chr",loopRegions_lost$seqnames[i]),
-                chromstart = loopRegions_lost$start[i],
-                chromend = loopRegions_lost$end[i],
+                chrom = paste0("chr",loopRegions_gained$seqnames[i]),
+                chromstart = loopRegions_gained$start[i],
+                chromend = loopRegions_gained$end[i],
                 zrange = c(0,100),
                 norm = "SCALE",
                 x = 0.25,
@@ -142,7 +137,7 @@ for(i in 1:nrow(loopRegions_lost)){
   
   ## Plot top omega Hi-C rectangle + annotate
   omega <- 
-    plotHicRectangle(data = "data/raw/hic/hg38/220716_dietJuicerMerge_omega/YAPP_HEK_inter_30.hic", 
+    plotHicRectangle(data = "data/raw/microc/hg38_220801/220717_dietJuicerMerge_omega/YAPP_HEK_inter_30.hic", 
                      params = p,
                      y = 0.5) |> 
     annoPixels(data = omega_loops,
@@ -151,7 +146,7 @@ for(i in 1:nrow(loopRegions_lost)){
   ## Plot middle Hi-C rectangle + SIP `-isDroso = TRUE` & `-isDroso = TRUE` calls 
   
   control <-
-    plotHicRectangle(data = "data/raw/hic/hg38/220716_dietJuicerMerge_condition/cont/YAPP_HEK_control_inter_30.hic",
+    plotHicRectangle(data = "data/raw/microc/hg38_220801/220717_dietJuicerMerge_condition/cont/YAPP_HEK_cont_inter_30.hic",
                      params = p,
                      y = 2.75) |> 
     annoPixels(data = cont_loops,
@@ -160,7 +155,7 @@ for(i in 1:nrow(loopRegions_lost)){
   ## Plot bottom Hi-C rectangle + SIP `-isDroso = TRUE` & `-isDroso = TRUE` calls
   
   sorb <- 
-    plotHicRectangle(data = "data/raw/hic/hg38/220716_dietJuicerMerge_condition/sorb/YAPP_HEK_sorbitol_inter_30.hic", 
+    plotHicRectangle(data = "data/raw/microc/hg38_220801/220717_dietJuicerMerge_condition/sorb/YAPP_HEK_sorb_inter_30.hic", 
                      params = p,
                      y = 5) |> 
     annoPixels(data = sorb_loops, 
@@ -195,7 +190,7 @@ for(i in 1:nrow(loopRegions_lost)){
            y = 4.85,
            just = c("top", "left"))
   
-  plotText(label = sprintf("Lost YAPP Loop %s", i),
+  plotText(label = sprintf("Gained YAPP Loop %s", i),
            x = 2.75,
            y = 0.1,
            just = c("center", "top"))

@@ -64,8 +64,8 @@ cont_noDroso_loops <- list.files(path = glue("data/raw/hic/hg38/sip-loops/noDros
 #              selectCol = 12,
 #              dist_method = "manhattan",
 #              minPts = 2)
-# saveRDS(cont_loops, "data/processed/cont_bothDroso_loops")
-readRDS("data/processed/cont_bothDroso_loops")
+# saveRDS(cont_loops, "data/processed/hic/cont_bothDroso_loops.rds")
+cont_loops <- readRDS("data/processed/hic/cont_bothDroso_loops.rds")
 
 ## Merge sorbitol loops from both `-isDroso true` & `-isDroso false`
 sorb_isDroso_loops <- list.files(path = "data/raw/hic/hg38/sip-loops/isDroso/sorb",
@@ -82,8 +82,8 @@ sorb_noDroso_loops <- list.files(path = "data/raw/hic/hg38/sip-loops/noDroso/sor
 #              selectCol = 12,
 #              dist_method = "manhattan",
 #              minPts = 2)
-# saveRDS(sorb_loops, "data/processed/sorb_bothDroso_loops")
-readRDS("data/processed/sorb_bothDroso_loops")
+# saveRDS(sorb_loops, "data/processed/hic/sorb_bothDroso_loops.rds")
+sorb_loops <- readRDS("data/processed/hic/sorb_bothDroso_loops.rds")
 
 ## Merge omega loops form both `-isDroso true` & `-isDroso false`
 omega_isDroso_loops <- list.files(path = "data/raw/hic/hg38/sip-loops/isDroso/omega/",
@@ -100,18 +100,18 @@ omega_noDroso_loops <- list.files(path = "data/raw/hic/hg38/sip-loops/noDroso/om
 #              selectCol = 12,
 #              dist_method = "manhattan",
 #              minPts = 2)
-# saveRDS(omega_loops, "data/processed/omega_bothDroso_loops")
-readRDS("data/processed/omega_bothDroso_loops")
+# saveRDS(omega_loops, "data/processed/hic/omega_bothDroso_loops.rds")
+omega_loops <- readRDS("data/processed/hic/omega_bothDroso_loops.rds")
 
 # Create Survey Plots -----------------------------------------------------
 
 ##make pdf
-pdf(file = "plots/YAPP_HEK_hic_gainedLoops.pdf",
+pdf(file = "plots/YAPP_HEK_hic_gainedLoops_rect.pdf",
     width = 5.5,
     height = 8)
 
 ## Loop through each region
-for(i in seq_along(loopRegions_gained)){
+for(i in 1:nrow(loopRegions_gained)){
   
   ## Define parameters
   p <- pgParams(assembly = "hg38",
