@@ -10,7 +10,7 @@ library(pheatmap)
 library(apeglm)
 
 # Load Data--------------
-load("data/processed/hic/YAPP_hic_loopCounts.rda")
+loopCounts <- readRDS("data/processed/hic/YAPP_hic_loopCounts.rds")
 
 # Add a loop_count column --------------
 loopCounts$loop_name <- glue("loop_{1:length(loopCounts)}")
@@ -87,6 +87,6 @@ dev.off()
 mcols(loopCounts) <- cbind(mcols(loopCounts), res)
 diff_loopCounts <- loopCounts
 
-## save as .rda
-save(diff_loopCounts, file = "data/processed/hic/YAPP_hic_diff_loopCounts.rda")
+## save as .rds
+saveRDS(diff_loopCounts, file = "data/processed/hic/YAPP_hic_diff_loopCounts.rds")
 sessionInfo()

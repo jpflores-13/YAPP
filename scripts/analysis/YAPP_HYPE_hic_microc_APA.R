@@ -1,4 +1,4 @@
-## YAPP (HEK) Hi-C data by APA plots 
+## Create APA plots comparing HEK & T47D Hi-C/Micro-C
 
 library(tidyverse)
 library(strawr)
@@ -8,7 +8,12 @@ library(RColorBrewer)
 library(plotgardener)
 
 ## Load in all loops
-loopCounts <- readRDS("data/processed/hic/YAPP_hic_loopCounts.rds")
+load("data/processed/hic/YAPP_hic_loopCounts.rda")
+hic_yapp_loopCounts <- loopCounts
+load("data/processed/microc/YAPP_microc_loopCounts.rda")
+microc_yapp_loopCounts <- loopCounts
+load("~/Phanstiel Lab Dropbox/JP Flores/projects/HYPE/data/processed/hic/HYPE_loopCounts.rda")
+hype_hic_loopCounts <- loopCounts
 
 contLoops <- readRDS("data/processed/hic/cont_bothDroso_loops.rds") |> 
   as_ginteractions() 
@@ -119,9 +124,3 @@ plotText(label = c("Cont", "Sorb"),
          rot = 90,
          just = c('center', 'bottom'))  
 dev.off()
-  
-
-
-
-
-

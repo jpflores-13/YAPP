@@ -10,7 +10,7 @@ library(glue)
 library(dbscan)
 library(data.table)
 
-load("data/processed/hic/YAPP_hic_diff_loopCounts.rda")
+diff_loopCounts <- readRDS("data/processed/hic/YAPP_hic_diff_loopCounts.rds")
 
 # Setting static and lost loops -------------------------------------------
 

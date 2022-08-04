@@ -8,7 +8,7 @@ library(RColorBrewer)
 library(plotgardener)
 
 ## Load in all loops
-load("data/processed/microc/YAPP_microc_loopCounts.rda")
+loopCounts <- readRDS("data/processed/microc/YAPP_microc_loopCounts.rds")
 
 contLoops <- readRDS("data/processed/microc/cont_bothDroso_loops.rds") |> 
   as_ginteractions() 

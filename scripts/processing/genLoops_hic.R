@@ -45,5 +45,5 @@ loopCounts <- extractCounts(bedpe = mergedLoops,
                 norm = "NONE",
                 matrix = "observed")
 # save data -----------------------------
-save(loopCounts, file = "data/processed/hic/YAPP_hic_loopCounts.rda")
+saveRDS(loopCounts, file = "data/processed/hic/YAPP_hic_loopCounts.rds")
 

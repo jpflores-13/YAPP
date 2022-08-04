@@ -9,7 +9,7 @@ library(purrr)
 library(pheatmap)
 
 # Load Data--------------
-load("data/processed/microc/YAPP_microc_loopCounts.rda")
+loopCounts <- readRDS("data/processed/microc/YAPP_microc_loopCounts.rds")
 
 # Add a loop_count column --------------
 loopCounts$loop_name <- glue("loop_{1:length(loopCounts)}")
@@ -86,6 +86,6 @@ dev.off()
 mcols(loopCounts) <- cbind(mcols(loopCounts), res)
 diff_loopCounts <- loopCounts
 
-## save as .rda
-save(diff_loopCounts, file = "data/processed/microc/YAPP_microc_diff_loopCounts.rda")
+## save as .rds
+saveRDS(diff_loopCounts, file = "data/processed/microc/YAPP_microc_diff_loopCounts.rds")
 sessionInfo()

@@ -52,4 +52,4 @@ loopCounts <-
                 matrix = "observed")
 
 # save data -----------------------------
-save(loopCounts, file = "data/processed/microc/YAPP_microc_loopCounts.rda")
+saveRDS(loopCounts, file = "data/processed/microc/YAPP_microc_loopCounts.rds")
