@@ -48,42 +48,42 @@ data/processed/hic/YAPP_hic_diff_loopCounts.rda:\
 data/processed/hic/omega_bothDroso_loops.rds:\
 	data/raw/hic/hg38/sip-loops/isDroso/omega/5kbLoops.txt\
 	data/raw/hic/hg38/sip-loops/noDroso/omega/5kbLoops.txt\
-	scripts/analysis/YAPP_HEK_hic_gainedLoops_rect.R
-		mkdir -p data/processed/hic
-		Rscript scripts/analysis/YAPP_HEK_hic_gainedLoops_rect.R
+	scripts/processing/loopLists_hic_condition.R
+		mkdir -p data/processed/hic/
+		Rscript scripts/processing/loopLists_hic_condition.R
 	
 data/processed/hic/sorb_bothDroso_loops.rds:\
 	data/raw/hic/hg38/sip-loops/isDroso/sorb/5kbLoops.txt\
 	data/raw/hic/hg38/sip-loops/noDroso/sorb/5kbLoops.txt\
-	scripts/analysis/YAPP_HEK_hic_gainedLoops_rect.R
-		mkdir -p data/processed/hic
-		Rscript scripts/analysis/YAPP_HEK_hic_gainedLoops_rect.R
+	scripts/processing/loopLists_hic_condition.R
+		mkdir -p data/processed/hic/
+		Rscript scripts/processing/loopLists_hic_condition.R
 	
 data/processed/hic/cont_bothDroso_loops.rds:\
 	data/raw/hic/hg38/sip-loops/isDroso/cont/5kbLoops.txt\
 	data/raw/hic/hg38/sip-loops/noDroso/cont/5kbLoops.txt\
-	scripts/analysis/YAPP_HEK_hic_gainedLoops_rect.R
-		mkdir -p data/processed/hic
-		Rscript scripts/analysis/YAPP_HEK_hic_gainedLoops_rect.R		
+	scripts/processing/loopLists_hic_condition.R
+		mkdir -p data/processed/hic/
+		Rscript scripts/processing/loopLists_hic_condition.R		
 	
 data/processed/microc/omega_bothDroso_loops.rds:\
 	data/raw/microc/hg38_220801/sip-loops/isDroso/omega/5kbLoops.txt\
 	data/raw/microc/hg38_220801/sip-loops/noDroso/omega/5kbLoops.txt\
-	scripts/analysis/YAPP_HEK_microc_gainedLoops_rect.R
-		mkdir -p data/processed/microc
-		Rscript scripts/analysis/YAPP_HEK_microc_gainedLoops_rect.R
+	scripts/processing/loopLists_microc_condition.R
+		mkdir -p data/processed/microc/
+		Rscript scripts/processing/loopLists_microc_condition.R
 	
 data/processed/microc/sorb_bothDroso_loops.rds:\
 	data/raw/microc/hg38_220801/sip-loops/isDroso/sorb/5kbLoops.txt\
 	data/raw/microc/hg38_220801/sip-loops/noDroso/sorb/5kbLoops.txt\
-	scripts/analysis/YAPP_HEK_microc_gainedLoops_rect.R
-		mkdir -p data/processed/microc
-		Rscript scripts/analysis/YAPP_HEK_microc_gainedLoops_rect.R
+	scripts/processing/loopLists_microc_condition.R
+		mkdir -p data/processed/microc/
+		Rscript scripts/processing/loopLists_microc_condition.R
 	
 data/processed/microc/cont_bothDroso_loops.rds:\
-	scripts/analysis/YAPP_HEK_microc_gainedLoops_rect.R
-		mkdir -p data/processed/microc
-		Rscript scripts/analysis/YAPP_HEK_microc_gainedLoops_rect.R		
+	scripts/processing/loopLists_microc_condition.R
+		mkdir -p data/processed/microc/
+		Rscript scripts/processing/loopLists_microc_condition.R		
 
 data/processed/microc/YAPP_microc_loopCounts.rda:\
 	scripts/processing/genLoops_microc.R\
