@@ -23,12 +23,12 @@ static
 lost <- subset(diff_loopCounts, pvalue <= 0.05 & log2FoldChange < 0)
 lost
 
-lost_adj <- subset(diff_loopCounts, padj < 0.1 & log2FoldChange < 0)
-lost_adj
+# lost_adj <- subset(diff_loopCounts, padj < 0.1 & log2FoldChange < 0)
+# lost_adj
 
 ## filter for the best lost loops
-bestLost <- head(lost_adj[order(lost_adj$log2FoldChange, decreasing = T)],100)
-bestLost <- head(lost_adj[order(lost_adj$padj, decreasing = F)], 100)
+bestLost <- head(lost[order(lost$log2FoldChange, decreasing = T)],100)
+bestLost <- head(lost[order(lost$pvalue, decreasing = F)], 100)
 bestLost
 
 # # all lost loops

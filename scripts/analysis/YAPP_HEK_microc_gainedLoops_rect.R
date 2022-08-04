@@ -28,7 +28,7 @@ gained <- subset(diff_loopCounts, pvalue <= 0.05 & log2FoldChange > 0)
 
 ## filter for the 100 best gained loops
 bestGained <- head(gained[order(gained$log2FoldChange, decreasing = T)],100)
-bestGained <- head(gained[order(gained$padj, decreasing = F)], 100)
+bestGained <- head(gained[order(gained$pvalue, decreasing = F)], 100)
 bestGained
 
 # top 100 gained loops
