@@ -1,4 +1,4 @@
-## Create APA plots comparing HEK & T47D Hi-C/Micro-C
+## HYPE (T47D) Hi-C data APA plots 
 
 library(tidyverse)
 library(strawr)
@@ -6,29 +6,28 @@ library(hictoolsr)
 library(GenomeInfoDb)
 library(RColorBrewer)
 library(plotgardener)
-library(fs)
+library(dbscan)
 
 ## Load in all loops
-hic_yapp_loopCounts <- readRDS("data/processed/hic/YAPP_hic_loopCounts.rds")
-microc_yapp_loopCounts <- readRDS("data/processed/microc/YAPP_microc_loopCounts.rds")
-hype_hic_loopCounts <- readRDS("~/Phanstiel Lab Dropbox/JP Flores/projects/HYPE/data/processed/hic/HYPE_loopCounts.rds")
+loopCounts <- readRDS("external/HYPE/data/processed/hic/HYPE_loopCounts.rds")
 
-hic_contLoops <- readRDS("data/processed/hic/cont_bothDroso_loops.rds") |> 
-  as_ginteractions() 
-
-hic_sorbLoops <- readRDS("data/processed/hic/sorb_bothDroso_loops.rds") |> 
+contLoops <- c("external/HYPE/data/raw/hic/hg38/sip-loops/isDroso/cont/5kbLoops.txt", "external/HYPE/data/raw/hic/hg38/sip-loops/noDroso/cont/5kbLoops.txt") |> 
+  mergeBedpe(res = 10e3,
+             selectCol = 12,
+             dist_method = "manhattan",
+             minPts = 2) |> 
   as_ginteractions()
 
-microc_contLoops <- readRDS("data/processed/microc/cont_bothDroso_loops.rds") |> 
+sorbLoops <- c("external/HYPE/data/raw/hic/hg38/sip-loops/isDroso/nacl/5kbLoops.txt", "external/HYPE/data/raw/hic/hg38/sip-loops/noDroso/nacl/5kbLoops.txt") |> 
+  mergeBedpe(res = 10e3,
+             selectCol = 12,
+             dist_method = "manhattan",
+             minPts = 2) |> 
   as_ginteractions()
 
-microc_sorbLoops <- readRDS("data/processed/microc/sorb_bothDroso_loops.rds") |> 
-  as_ginteractions()
-
-hype_contLoops <- readRDS("~/Phanstiel Lab Dropbox/JP Flores/projects/HYPE/data/processed/hic/")
-
-## convert list contents into "UCSC" seqLevelsStyles
-map()
+seqlevelsStyle(loopCounts) <- "UCSC"
+seqlevelsStyle(contLoops) <- "UCSC"
+seqlevelsStyle(sorbLoops) <- "UCSC"
 
 ## Compile all YAPP loops and plop them into a list
 loopList <- 
@@ -50,8 +49,8 @@ filteredLoops <-
 map(filteredLoops, summary)
 
 ## Hi-C file paths 
-cont_hic <- "data/raw/hic/hg38/220716_dietJuicerMerge_condition/cont/YAPP_HEK_control_inter_30.hic"
-sorb_hic <- "data/raw/hic/hg38/220716_dietJuicerMerge_condition/sorb/YAPP_HEK_sorbitol_inter_30.hic"
+cont_hic <- "external/HYPE/data/raw/hic/hg38/220718_dietJuicerMerge_treatment/cont/HYPE_T47D_None_inter_30.hic"
+sorb_hic <- "external/HYPE/data/raw/hic/hg38/220718_dietJuicerMerge_treatment/nacl/HYPE_T47D_NaCl_inter_30.hic"
 
 ## Calculate APA matrices for loops from control Hi-C data
 cont_APA_mat <- 
@@ -60,9 +59,6 @@ cont_APA_mat <-
 ## Calculate APA matrices for loops from sorbitol Hi-C data
 sorb_APA_mat <-
   map(filteredLoops, calcApa, hic = sorb_hic, norm = norm, buffer = buffer)
-
-## had to debug `calcAPA()` with Eric. Changes made to JP's forked version of hictoolsr
-# debugonce(calcApa)
 
 ## Get the number of loops for each condition
 nLoops <- map(filteredLoops, length)
@@ -77,7 +73,7 @@ plotApa(apa = loopApaContHic$allLoops,
 
 
 # Create plotgardener page ------------------------------------------------
-pdf(file = "plots/YAPP_HEK_hic_APA.pdf",
+pdf(file = "external/HYPE/plots/HYPE_T47D_hic_APA.pdf",
     height = 3,
     width = 4.25)
 
@@ -104,7 +100,7 @@ cont_plots <-
   })
 
 ## Plot row of sorbitol APAs
-fs_plots <- 
+nacl_plots <- 
   pmap(list(loopApaSorbHic, xpos, ypos[2]), \(a, x, y) {
     plotApa(params = p, apa = a, x = x, y = y)
   })
@@ -118,14 +114,20 @@ annoHeatmapLegend(plot = cont_plots[[1]],
                   fontcolor = 'black')
 
 ## Add text labels
-plotText(label = c("All loops", "Control loops", "Sorbitol loops"),
+plotText(label = c("All loops", "Control loops", "NaCl loops"),
          x = xpos + p$width / 2,
          y = ypos[1] - p$space,
          just = c('center', 'bottom'))
 
-plotText(label = c("Cont", "Sorb"),
+plotText(label = c("cont", "nacl"),
          x = xpos[1] - p$space,
          y = ypos[1:2] + p$height / 2,
          rot = 90,
          just = c('center', 'bottom'))  
 dev.off()
+
+
+
+
+
+

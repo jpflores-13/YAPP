@@ -24,7 +24,15 @@ objects :=\
 	plots/YAPP_HEK_microc_lostLoops_rect.pdf\
 	plots/YAPP_HEK_hic_APA.pdf\
 	plots/YAPP_HEK_microc_APA.pdf\
-	plots/YAPP_HYPE_hic_microc_APA.pdf
+	external/HYPE/data/processed/hic/HYPE_loopCounts.rds\
+	external/HYPE/data/processed/hic/HYPE_diff_loopCounts.rds\
+	external/HYPE/data/processed/hic/cont_bothDroso_loops.rds\
+	external/HYPE/data/processed/hic/sorb_bothDroso_loops.rds\
+	external/HYPE/data/processed/hic/omega_bothDroso_loops.rds\
+	external/HYPE/plots/HYPE_diffLoops_nacl_PCA_hic.pdf\
+	external/HYPE/plots/HYPE_diffLoops_nacl_hcluster_hic.pdf\
+	external/HYPE/plots/HYPE_diffLoops_nacl_MA_hic.pdf\
+	external/HYPE/plots/HYPE_T47D_hic_APA.pdf
 
 all: $(objects)
 	echo done!
@@ -220,25 +228,55 @@ plots/YAPP_HEK_microc_APA.pdf:\
 		mkdir -p plots
 		Rscript scripts/analysis/YAPP_HEK_microc_APA.R
 		
-plots/YAPP_HYPE_hic_microc_APA.pdf:\
-	scripts/analysis/YAPP_HYPE_hic_microc_APA.R\
+external/HYPE/data/processed/hic/HYPE_loopCounts.rds:\
+	external/HYPE/scripts/processing/genLoops.R\
+	external/HYPE/data/raw/hic/hg38/220717_dietJuicerCore/*\
+	external/HYPE/data/raw/hic/hg38/sip-loops/isDroso/*/5kbLoops.txt\
+	external/HYPE/data/raw/hic/hg38/sip-loops/noDroso/*/5kbLoops.txt
+		mkdir -p external/HYPE/data/processed/hic/
+		Rscript external/HYPE/scripts/processing/genLoops.R
+		
+external/HYPE/data/processed/hic/HYPE_diff_loopCounts.rds:\
+	external/HYPE/scripts/processing/diffAnalysis.R\
+	external/HYPE/data/processed/hic/HYPE_loopCounts.rds
+		mkdir -p external/HYPE/data/processed/hic/
+		Rscript external/HYPE/scripts/processing/diffAnalysis.R
+		
+external/HYPE/plots/HYPE_diffLoops_nacl_PCA_hic.pdf:\
+	external/HYPE/data/processed/hic/HYPE_loopCounts.rds\
+	external/HYPE/scripts/processing/diffAnalysis.R
+		mkdir -p external/HYPE/plots
+		Rscript external/HYPE/scripts/processing/diffAnalysis.R
+	
+external/HYPE/plots/HYPE_diffLoops_nacl_hcluster_hic.pdf:\
+	external/HYPE/data/processed/hic/HYPE_loopCounts.rds\
+	external/HYPE/scripts/processing/diffAnalysis.R
+		mkdir -p external/HYPE/plots
+		Rscript external/HYPE/scripts/processing/diffAnalysis.R
 
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+external/HYPE/plots/HYPE_diffLoops_nacl_MA_hic.pdf:\
+	external/HYPE/data/processed/hic/HYPE_loopCounts.rds\
+	external/HYPE/scripts/processing/diffAnalysis.R
+		mkdir -p external/HYPE/plots
+		Rscript external/HYPE/scripts/processing/diffAnalysis.R
 
+external/HYPE/plots/HYPE_hic_SCALE_tile_chr1.pdf:\
+	external/HYPE/scripts/analysis/tileChr.R\
+	external/HYPE/data/raw/hic/hg38/220718_dietJuicerMerge_omega/HYPE_T47D_inter_30.hic\
+	external/HYPE/data/raw/hic/hg38/220718_dietJuicerMerge_treatment/cont/HYPE_T47D_None_inter_30.hic\
+	external/HYPE/data/raw/hic/hg38/220718_dietJuicerMerge_treatment/nacl/HYPE_T47D_NaCl_inter_30.hic
+		mkdir -p external/HYPE/plots
+		Rscript external/HYPE/scripts/analysis/tileChr.R
+		
+external/HYPE/plots/HYPE_T47D_hic_APA.pdf:\
+	external/HYPE/scripts/analysis/HYPE_T47D_hic_APA.R\
+	external/HYPE/data/processed/hic/HYPE_loopCounts.rds\
+	external/HYPE/data/raw/hic/hg38/sip-loops/isDroso/cont/5kbLoops.txt\
+	external/HYPE/data/raw/hic/hg38/sip-loops/noDroso/cont/5kbLoops.txt\
+	external/HYPE/data/raw/hic/hg38/sip-loops/isDroso/nacl/5kbLoops.txt\
+	external/HYPE/data/raw/hic/hg38/sip-loops/noDroso/nacl/5kbLoops.txt\
+	external/HYPE/data/raw/hic/hg38/220718_dietJuicerMerge_treatment/cont/HYPE_T47D_None_inter_30.hic\
+	external/HYPE/data/raw/hic/hg38/220718_dietJuicerMerge_treatment/nacl/HYPE_T47D_NaCl_inter_30.hic
+		mkdir -p external/HYPE/plots
+		Rscript external/HYPE/scripts/analysis/HYPE_T47D_hic_APA.R
+	
