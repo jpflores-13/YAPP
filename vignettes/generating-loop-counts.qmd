@@ -6,9 +6,10 @@ format: html
 editor: visual
 ---
 
-After processing `.hic` sequencing data with [dietJuicer](https://github.com/EricSDavis/dietJuicer) and calling loops with [SIP](https://github.com/PouletAxel/SIP), the next step is to merge the `.bedpe` files. We do this to capture unique loop calls and get rid of any redundant ones (ex. duplicates, etc.). 
+After processing `.hic` sequencing data with [dietJuicer](https://github.com/EricSDavis/dietJuicer) and calling loops with [SIP](https://github.com/PouletAxel/SIP), the next step is to merge the `.bedpe` files. We do this to capture unique loop calls and get rid of any redundant ones (ex. duplicates, etc.).
 
 ### Libraries needed:
+
 ```{r}
 #| warning: false
 ## install github
@@ -39,26 +40,23 @@ noDroso_loops <- list.files(path = glue("data/raw/hic/hg38/sip-loops/noDroso/{co
 bothDroso_loops <- c(isDroso_loops, noDroso_loops)
 ```
 
-
 ### Provide `.hic` files to extract from
 
-After providing and vectorizing the correct file paths, we now need to provide `.hic` files form which we need to extract counts from. The `.bedpe` files provide information regarding what we presume to be interactions between two regions of the genome. 
+After providing and vectorizing the correct file paths, we now need to provide `.hic` files form which we need to extract counts from. The `.bedpe` files provide information regarding what we presume to be interactions between two regions of the genome.
 
-For example, 
+For example,
 
-| seqnames | ranges1     |seqnames2| ranges2     |
-|----------|:------------|--------:|:-----------:|
-|  chr1    |840000-850000| chr2    |890000-900000|
+| seqnames | ranges1       | seqnames2 |    ranges2    |
+|----------|:--------------|----------:|:-------------:|
+| chr1     | 840000-850000 |      chr2 | 890000-900000 |
 
 : Entries from a `.bedpe` file with two custom fields added to each record
-
 
 ```{r}
 hic_files <- list.files(path = glue("data/raw/hic/hg38/220722_dietJuicerCore/{cond}"), full.names = T)
 ```
 
-
-## Merge `.bedpe` files into one and extract counts  
+## Merge `.bedpe` files into one and extract counts
 
 ```{r}
 #| eval: false
@@ -85,8 +83,8 @@ loopCounts <- extractCounts(bedpe = mergedLoops,
                 matrix = "observed")
 ```
 
-
 ### Save the data as an `.rds` for use with other downstream analyses
+
 ```{r}
 #| eval: false
 ## Save as .rds
@@ -97,12 +95,3 @@ saveRDS(loopCounts, file = "data/processed/hic/YAPP_hic_loopCounts.rds")
 ## include sessionInfo() for reproducibility
 sessionInfo()
 ```
-
-
-
-
-
-
-
-
-

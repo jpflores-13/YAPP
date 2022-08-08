@@ -1,0 +1,6 @@
+- source: generating-loop-counts.qmd
+  quarto-pub:
+    - id: b96c30ce-f230-4ecc-a70b-9fad3894a351
+      url: 'https://quartopub.com/sites/jpflores/extract-loop-counts'
+    - id: e1c29554-86cd-4b97-9fbe-ab4a411c19cd
+      url: 'https://quartopub.com/sites/jpflores/generating-loop-counts'
