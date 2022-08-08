@@ -67,7 +67,7 @@ mats_combined <- c(cont_APA_mat,
 
 
 # Create plotgardener page ------------------------------------------------
-pdf(file = "plots/HYPE_T47D_hic_APA.pdf",
+pdf(file = "external/HYPE/plots/HYPE_T47D_hic_APA.pdf",
     height = 3,
     width = 4.5)
 
