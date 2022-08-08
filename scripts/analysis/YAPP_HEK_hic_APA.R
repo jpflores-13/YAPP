@@ -1,4 +1,4 @@
-## YAPP (HEK) Hi-C data by APA plots 
+## Gained Loop APA plots for HEK Hi-C
 
 library(tidyverse)
 library(strawr)
@@ -7,24 +7,29 @@ library(GenomeInfoDb)
 library(RColorBrewer)
 library(plotgardener)
 
-## Load in all loops
-loopCounts <- readRDS("data/processed/hic/YAPP_hic_loopCounts.rds")
+# Load in all loops -------------------------------------------------------
+diff_loopCounts <- readRDS("data/processed/hic/YAPP_hic_diff_loopCounts.rds")
 
-contLoops <- readRDS("data/processed/hic/cont_bothDroso_loops.rds") |> 
-  as_ginteractions() 
+## convert seqlevelStyles
+seqlevelsStyle(diff_loopCounts) <- "UCSC"
 
-sorbLoops <- readRDS("data/processed/hic/sorb_bothDroso_loops.rds") |> 
-  as_ginteractions()
+## Filter all static loops
+staticLoops <- diff_loopCounts |> 
+  subset(padj > 0.1)
 
-seqlevelsStyle(loopCounts) <- "UCSC"
-seqlevelsStyle(contLoops) <- "UCSC"
-seqlevelsStyle(sorbLoops) <- "UCSC"
+## Filter out gained loops
+gainedLoops <- diff_loopCounts |> 
+  subset(padj < 0.1 & log2FoldChange > 0)
 
-## Compile all YAPP loops and plop them into a list
+## Filter out lost loops
+lostLoops <- diff_loopCounts |> 
+  subset(padj < 0.1 & log2FoldChange < 0)
+
+## Compile loop lists
 loopList <- 
-  list(allLoops = loopCounts,
-       contLoops = contLoops,
-       sorbLoops = sorbLoops)
+  list(staticLoops = staticLoops,
+       gainedLoops = gainedLoops,
+       lostLoops = lostLoops)
 
 ## Define resolution, buffer, and normalization (pixels from center)
 res <- 10e3
@@ -40,39 +45,34 @@ filteredLoops <-
 map(filteredLoops, summary)
 
 ## Hi-C file paths 
-cont_hic <- "data/raw/hic/hg38/220716_dietJuicerMerge_condition/cont/YAPP_HEK_control_inter_30.hic"
-sorb_hic <- "data/raw/hic/hg38/220716_dietJuicerMerge_condition/sorb/YAPP_HEK_sorbitol_inter_30.hic"
+cont_hic_YAPP <- "data/raw/hic/hg38/220716_dietJuicerMerge_condition/cont/YAPP_HEK_control_inter_30.hic"
+sorb_hic_YAPP <- "data/raw/hic/hg38/220716_dietJuicerMerge_condition/sorb/YAPP_HEK_sorbitol_inter_30.hic"
 
-## Calculate APA matrices for loops from control Hi-C data
-cont_APA_mat <- 
-  map(filteredLoops, calcApa, hic = cont_hic, norm = norm, buffer = buffer)
+## Calculate APA matrices for loops from control HEK Hi-C data
+cont_APA_mat <- map(filteredLoops, calcApa, hic = cont_hic_YAPP, norm = norm, buffer = buffer)
 
-## Calculate APA matrices for loops from sorbitol Hi-C data
-sorb_APA_mat <-
-  map(filteredLoops, calcApa, hic = sorb_hic, norm = norm, buffer = buffer)
-
-## had to debug `calcAPA()` with Eric. Changes made to JP's forked version of hictoolsr
-# debugonce(calcApa)
+## Calculate APA matrices for loops from sorbitol HEK Hi-C data
+sorb_APA_mat <- map(filteredLoops, calcApa, hic = sorb_hic_YAPP, norm = norm, buffer = buffer)
 
 ## Get the number of loops for each condition
 nLoops <- map(filteredLoops, length)
 
 ## Divide each matrix by nLoops
-loopApaContHic <- Map("/", cont_APA_mat, nLoops)
-loopApaSorbHic <- Map("/", sorb_APA_mat, nLoops)
+cont_APA_mat <- Map("/", cont_APA_mat, nLoops)
+sorb_APA_mat <- Map("/", sorb_APA_mat, nLoops)
 
-## plot
-plotApa(apa = loopApaContHic$allLoops,
-        palette = colorRampPalette(brewer.pal(9, 'YlGnBu')))
+## combine APA matrices to pull out the max value for zrange max
+mats_combined <- c(cont_APA_mat,
+                   sorb_APA_mat)
 
 
 # Create plotgardener page ------------------------------------------------
 pdf(file = "plots/YAPP_HEK_hic_APA.pdf",
     height = 3,
-    width = 4.25)
+    width = 4.5)
 
 ## Initiate plotgardener page
-pageCreate(width = 4.25, height = 3, showGuides = F)
+pageCreate(width = 4.5, height = 3, showGuides = F)
 
 ## Define shared parameters
 p <- pgParams(x = 0.5,
@@ -80,48 +80,64 @@ p <- pgParams(x = 0.5,
               width = 1,
               height = 1,
               space = 0.075,
-              zrange = c(0, max(unlist(c(loopApaContHic, loopApaSorbHic)))),
+              zrange = c(0, max(unlist(mats_combined))),
               palette = colorRampPalette(brewer.pal(9, 'YlGnBu')))
 
-## Define grid of coordinate positions
-xpos <- c(p$x, p$x + p$width + p$space, p$x + (p$width + p$space)*2)
-ypos <- c(p$y, p$y + p$height + p$space, p$y + (p$height + p$space)*2)
+## Plot gained control APAs
+leftTop <- plotApa(params = p, cont_APA_mat$gainedLoops) |> 
+  annoHeatmapLegend(x = 1.55, y = 0.5, width = 0.1, 
+                    height = 0.5)
 
-## Plot row of cont APAs
-cont_plots <- 
-  pmap(list(loopApaContHic, xpos, ypos[1]), \(a, x, y) {
-    plotApa(params = p, apa = a, x = x, y = y)
-  })
+## Plot gained treated APAs
+leftBottom <- plotApa(params = p, sorb_APA_mat$gainedLoops, y = 1.55) |> 
+  annoHeatmapLegend(x = 1.55, y = 1.55, width = 0.1, height = 0.5)
 
-## Plot row of sorbitol APAs
-fs_plots <- 
-  pmap(list(loopApaSorbHic, xpos, ypos[2]), \(a, x, y) {
-    plotApa(params = p, apa = a, x = x, y = y)
-  })
+## Plot lost control APAs
+middleTop <- plotApa(params = p, cont_APA_mat$lostLoops, x = 1.75) |> 
+  annoHeatmapLegend(x = 2.85, y = 0.5, width = 0.1, 
+                    height = 0.5)
 
-## Add legend
-annoHeatmapLegend(plot = cont_plots[[1]],
-                  x = p$x + (p$width + p$space)*3,
-                  y = ypos[1],
-                  width = p$space,
-                  height = p$height*0.75,
-                  fontcolor = 'black')
+## Plot lost treated APAs
+middleBottom <- plotApa(params = p, sorb_APA_mat$lostLoops, x = 1.75, y = 1.55) |> 
+  annoHeatmapLegend(x = 2.85, y = 1.55, width = 0.1, 
+                    height = 0.5)  
+
+## Plot static control APAs
+topRight <- plotApa(params = p, cont_APA_mat$staticLoops, x = 3.05, y = 0.5) |> 
+  annoHeatmapLegend(x = 4.1, y = 0.5, width = 0.1, 
+                    height = 0.5)
+
+## Plot static treated APAs
+bottomRight <- plotApa(params = p, sorb_APA_mat$staticLoops, x = 3.05, y = 1.55) |> 
+  annoHeatmapLegend(x = 4.1, y = 1.55, width = 0.1, height = 0.5)
 
 ## Add text labels
-plotText(label = c("All loops", "Control loops", "Sorbitol loops"),
-         x = xpos + p$width / 2,
-         y = ypos[1] - p$space,
-         just = c('center', 'bottom'))
+plotText(label = "Gained",
+         x = 1,
+         y = 0.25,
+         just = c('center', 'top'))
 
-plotText(label = c("Cont", "Sorb"),
-         x = xpos[1] - p$space,
-         y = ypos[1:2] + p$height / 2,
+plotText(label = "Lost",
+         x = 2.25,
+         y = 0.25,
+         just = c('center', 'top'))
+
+plotText(label = "Static",
+         x = 3.5,
+         y = 0.25,
+         just = c('center', 'top'))
+
+plotText(label = "Cont",
+         x = 0.45,
+         y = 1,
          rot = 90,
          just = c('center', 'bottom'))  
+
+plotText(label = "Sorb",
+         x = 0.45,
+         y = 2,
+         rot = 90,
+         just = c('center', 'bottom'))  
+
+
 dev.off()
-  
-
-
-
-
-

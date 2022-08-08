@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.0.37">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="JP Flores">
+<meta name="dcterms.date" content="2022-08-07">
+
+<title>Generating Loop Counts</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<script src="generating-loop-counts_files/libs/clipboard/clipboard.min.js"></script>
+<script src="generating-loop-counts_files/libs/quarto-html/quarto.js"></script>
+<script src="generating-loop-counts_files/libs/quarto-html/popper.min.js"></script>
+<script src="generating-loop-counts_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="generating-loop-counts_files/libs/quarto-html/anchor.min.js"></script>
+<link href="generating-loop-counts_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="generating-loop-counts_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="generating-loop-counts_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="generating-loop-counts_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="generating-loop-counts_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+
+
+</head>
+
+<body class="fullcontent">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Generating Loop Counts</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>JP Flores </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">August 7, 2022</p>
+    </div>
+  </div>
+    
+  </div>
+  
+
+</header>
+
+<p>After processing <code>.hic</code> sequencing data with <a href="https://github.com/EricSDavis/dietJuicer">dietJuicer</a> and calling loops with <a href="https://github.com/PouletAxel/SIP">SIP</a>, the next step is to merge the <code>.bedpe</code> files. We do this to capture unique loop calls and get rid of any redundant ones (ex. duplicates, etc.).</p>
+<section id="libraries-needed" class="level3">
+<h3 class="anchored" data-anchor-id="libraries-needed">Libraries needed:</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="do">## install github</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co"># remotes::install_github("EricSDavis/hictoolsr")</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="do">## load package</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(hictoolsr)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(glue)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dbscan)</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(GenomeInfoDb)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="compiling-loops-of-interest" class="level3">
+<h3 class="anchored" data-anchor-id="compiling-loops-of-interest">Compiling loops of interest</h3>
+<p>Before we merge, we have to list the file paths that house our <code>.bedpe</code> files. After running <code>SIP</code>, they are usually named <code>5kbLoops.txt</code>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>cond <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"cont"</span>, <span class="st">"sorb"</span>, <span class="st">"omega"</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>isDroso_loops <span class="ot">&lt;-</span> <span class="fu">list.files</span>(<span class="at">path =</span> <span class="fu">glue</span>(<span class="st">"data/raw/hic/hg38/sip-loops/isDroso/{cond}"</span>),</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>                            <span class="at">full.names =</span> T,</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>                            <span class="at">pattern =</span> <span class="st">"5kbLoops"</span>)</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>noDroso_loops <span class="ot">&lt;-</span> <span class="fu">list.files</span>(<span class="at">path =</span> <span class="fu">glue</span>(<span class="st">"data/raw/hic/hg38/sip-loops/noDroso/{cond}"</span>),</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>                            <span class="at">full.names =</span> T,</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>                            <span class="at">pattern =</span> <span class="st">"5kbLoops"</span>)</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>bothDroso_loops <span class="ot">&lt;-</span> <span class="fu">c</span>(isDroso_loops, noDroso_loops)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="provide-.hic-files-to-extract-from" class="level3">
+<h3 class="anchored" data-anchor-id="provide-.hic-files-to-extract-from">Provide <code>.hic</code> files to extract from</h3>
+<p>After providing and vectorizing the correct file paths, we now need to provide <code>.hic</code> files form which we need to extract counts from. The <code>.bedpe</code> files provide information regarding what we presume to be interactions between two regions of the genome.</p>
+<p>For example,</p>
+<table class="table">
+<caption>Entries from a <code>.bedpe</code> file with two custom fields added to each record</caption>
+<thead>
+<tr class="header">
+<th>seqnames</th>
+<th style="text-align: left;">ranges1</th>
+<th style="text-align: right;">seqnames2</th>
+<th style="text-align: center;">ranges2</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>chr1</td>
+<td style="text-align: left;">840000-850000</td>
+<td style="text-align: right;">chr2</td>
+<td style="text-align: center;">890000-900000</td>
+</tr>
+</tbody>
+</table>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>hic_files <span class="ot">&lt;-</span> <span class="fu">list.files</span>(<span class="at">path =</span> <span class="fu">glue</span>(<span class="st">"data/raw/hic/hg38/220722_dietJuicerCore/{cond}"</span>), <span class="at">full.names =</span> T)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="merge-.bedpe-files-into-one-and-extract-counts" class="level2">
+<h2 class="anchored" data-anchor-id="merge-.bedpe-files-into-one-and-extract-counts">Merge <code>.bedpe</code> files into one and extract counts</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="do">## merge &amp; convert to GInteractions</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>mergedLoops <span class="ot">&lt;-</span> </span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mergeBedpe</span>(<span class="at">bedpeFiles =</span> bothDroso_loops,</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>             <span class="at">res =</span> <span class="dv">10000</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as_ginteractions</span>()</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="do">## rename seqstyles level</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="fu">seqlevelsStyle</span>(mergedLoops) <span class="ot">&lt;-</span> <span class="st">"UCSC"</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a><span class="do">## Bin bedpe files to correct resolution</span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>mergedLoops <span class="ot">&lt;-</span> mergedLoops <span class="sc">|&gt;</span> </span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">binBedpe</span>(<span class="at">res =</span> <span class="fl">10e3</span>,</span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>           <span class="at">a1Pos =</span> <span class="st">"center"</span>,</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>           <span class="at">a2Pos =</span> <span class="st">"center"</span>)</span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>loopCounts <span class="ot">&lt;-</span> <span class="fu">extractCounts</span>(<span class="at">bedpe =</span> mergedLoops,</span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>                <span class="at">hic =</span> hic_files,</span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>                <span class="at">chroms =</span> <span class="fu">paste0</span>(<span class="st">"chr"</span>,<span class="fu">c</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">22</span>, <span class="st">"X"</span>, <span class="st">"Y"</span>)),</span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>                <span class="at">res =</span> <span class="fl">10e3</span>,</span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>                <span class="at">norm =</span> <span class="st">"NONE"</span>, <span class="do">## should always be set to "NONE"</span></span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>                <span class="at">matrix =</span> <span class="st">"observed"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<section id="save-the-data-as-an-.rds-for-use-with-other-downstream-analyses" class="level3">
+<h3 class="anchored" data-anchor-id="save-the-data-as-an-.rds-for-use-with-other-downstream-analyses">Save the data as an <code>.rds</code> for use with other downstream analyses</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Save as .rds</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">saveRDS</span>(loopCounts, <span class="at">file =</span> <span class="st">"data/processed/hic/YAPP_hic_loopCounts.rds"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="do">## include sessionInfo() for reproducibility</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sessionInfo</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>R version 4.2.0 (2022-04-22)
+Platform: x86_64-apple-darwin17.0 (64-bit)
+Running under: macOS Big Sur/Monterey 10.16
+
+Matrix products: default
+BLAS:   /Library/Frameworks/R.framework/Versions/4.2/Resources/lib/libRblas.0.dylib
+LAPACK: /Library/Frameworks/R.framework/Versions/4.2/Resources/lib/libRlapack.dylib
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+attached base packages:
+[1] stats4    stats     graphics  grDevices utils     datasets  methods  
+[8] base     
+
+other attached packages:
+ [1] GenomeInfoDb_1.33.3 IRanges_2.31.0      S4Vectors_0.35.1   
+ [4] BiocGenerics_0.43.1 forcats_0.5.1       stringr_1.4.0      
+ [7] dplyr_1.0.9         purrr_0.3.4         readr_2.1.2        
+[10] tidyr_1.2.0         tibble_3.1.8        ggplot2_3.3.6      
+[13] tidyverse_1.3.2     dbscan_1.1-10       glue_1.6.2         
+[16] hictoolsr_0.1.0    
+
+loaded via a namespace (and not attached):
+ [1] bitops_1.0-7                matrixStats_0.62.0         
+ [3] fs_1.5.2                    lubridate_1.8.0            
+ [5] httr_1.4.3                  RColorBrewer_1.1-3         
+ [7] InteractionSet_1.25.0       tools_4.2.0                
+ [9] backports_1.4.1             utf8_1.2.2                 
+[11] R6_2.5.1                    DBI_1.1.3                  
+[13] colorspace_2.0-3            withr_2.5.0                
+[15] tidyselect_1.1.2            curl_4.3.2                 
+[17] compiler_4.2.0              rvest_1.0.2                
+[19] cli_3.3.0                   Biobase_2.57.1             
+[21] xml2_1.3.3                  DelayedArray_0.23.1        
+[23] rtracklayer_1.57.0          scales_1.2.0               
+[25] digest_0.6.29               Rsamtools_2.13.3           
+[27] yulab.utils_0.0.5           rmarkdown_2.14             
+[29] XVector_0.37.0              pkgconfig_2.0.3            
+[31] htmltools_0.5.3             MatrixGenerics_1.9.1       
+[33] dbplyr_2.2.1                fastmap_1.1.0              
+[35] readxl_1.4.0                htmlwidgets_1.5.4          
+[37] rlang_1.0.4                 rstudioapi_0.13            
+[39] gridGraphics_0.5-1          BiocIO_1.7.1               
+[41] generics_0.1.3              jsonlite_1.8.0             
+[43] BiocParallel_1.31.10        googlesheets4_1.0.0        
+[45] RCurl_1.98-1.8              magrittr_2.0.3             
+[47] ggplotify_0.1.0             GenomeInfoDbData_1.2.8     
+[49] Matrix_1.4-1                Rcpp_1.0.9                 
+[51] munsell_0.5.0               fansi_1.0.3                
+[53] lifecycle_1.0.1             stringi_1.7.8              
+[55] yaml_2.3.5                  SummarizedExperiment_1.27.1
+[57] zlibbioc_1.43.0             plyr_1.8.7                 
+[59] grid_4.2.0                  parallel_4.2.0             
+[61] crayon_1.5.1                lattice_0.20-45            
+[63] Biostrings_2.65.1           haven_2.5.0                
+[65] hms_1.1.1                   knitr_1.39                 
+[67] pillar_1.8.0                GenomicRanges_1.49.0       
+[69] rjson_0.2.21                reshape2_1.4.4             
+[71] codetools_0.2-18            strawr_0.0.9               
+[73] reprex_2.0.1                XML_3.99-0.10              
+[75] plotgardener_1.3.7          evaluate_0.15              
+[77] modelr_0.1.8                data.table_1.14.2          
+[79] tzdb_0.3.0                  vctrs_0.4.1                
+[81] cellranger_1.1.0            gtable_0.3.0               
+[83] assertthat_0.2.1            xfun_0.31                  
+[85] broom_1.0.0                 restfulr_0.0.15            
+[87] googledrive_2.0.0           gargle_1.2.0               
+[89] GenomicAlignments_1.33.1    plyranges_1.17.0           
+[91] ellipsis_0.3.2             </code></pre>
+</div>
+</div>
+</section>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    setTimeout(function() {
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      let href = ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const cites = ref.parentNode.getAttribute('data-cites').split(' ');
+    tippyHover(ref, function() {
+      var popup = window.document.createElement('div');
+      cites.forEach(function(cite) {
+        var citeDiv = window.document.createElement('div');
+        citeDiv.classList.add('hanging-indent');
+        citeDiv.classList.add('csl-entry');
+        var biblioDiv = window.document.getElementById('ref-' + cite);
+        if (biblioDiv) {
+          citeDiv.innerHTML = biblioDiv.innerHTML;
+        }
+        popup.appendChild(citeDiv);
+      });
+      return popup.innerHTML;
+    });
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>

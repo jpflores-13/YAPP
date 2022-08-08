@@ -1,0 +1,108 @@
+---
+title: "Generating Loop Counts"
+author: JP Flores
+date: 08/07/2022
+format: html
+editor: visual
+---
+
+After processing `.hic` sequencing data with [dietJuicer](https://github.com/EricSDavis/dietJuicer) and calling loops with [SIP](https://github.com/PouletAxel/SIP), the next step is to merge the `.bedpe` files. We do this to capture unique loop calls and get rid of any redundant ones (ex. duplicates, etc.). 
+
+### Libraries needed:
+```{r}
+#| warning: false
+## install github
+# remotes::install_github("EricSDavis/hictoolsr")
+
+## load package
+library(hictoolsr)
+library(glue)
+library(dbscan)
+library(tidyverse)
+library(GenomeInfoDb)
+```
+
+### Compiling loops of interest
+
+Before we merge, we have to list the file paths that house our `.bedpe` files. After running `SIP`, they are usually named `5kbLoops.txt`.
+
+```{r}
+cond <- c("cont", "sorb", "omega")
+isDroso_loops <- list.files(path = glue("data/raw/hic/hg38/sip-loops/isDroso/{cond}"),
+                            full.names = T,
+                            pattern = "5kbLoops")
+
+noDroso_loops <- list.files(path = glue("data/raw/hic/hg38/sip-loops/noDroso/{cond}"),
+                            full.names = T,
+                            pattern = "5kbLoops")
+
+bothDroso_loops <- c(isDroso_loops, noDroso_loops)
+```
+
+
+### Provide `.hic` files to extract from
+
+After providing and vectorizing the correct file paths, we now need to provide `.hic` files form which we need to extract counts from. The `.bedpe` files provide information regarding what we presume to be interactions between two regions of the genome. 
+
+For example, 
+
+| seqnames | ranges1     |seqnames2| ranges2     |
+|----------|:------------|--------:|:-----------:|
+|  chr1    |840000-850000| chr2    |890000-900000|
+
+: Entries from a `.bedpe` file with two custom fields added to each record
+
+
+```{r}
+hic_files <- list.files(path = glue("data/raw/hic/hg38/220722_dietJuicerCore/{cond}"), full.names = T)
+```
+
+
+## Merge `.bedpe` files into one and extract counts  
+
+```{r}
+#| eval: false
+## merge & convert to GInteractions
+mergedLoops <- 
+  mergeBedpe(bedpeFiles = bothDroso_loops,
+             res = 10000) |> 
+  as_ginteractions()
+
+## rename seqstyles level
+seqlevelsStyle(mergedLoops) <- "UCSC"
+
+## Bin bedpe files to correct resolution
+mergedLoops <- mergedLoops |> 
+  binBedpe(res = 10e3,
+           a1Pos = "center",
+           a2Pos = "center")
+
+loopCounts <- extractCounts(bedpe = mergedLoops,
+                hic = hic_files,
+                chroms = paste0("chr",c(1:22, "X", "Y")),
+                res = 10e3,
+                norm = "NONE", ## should always be set to "NONE"
+                matrix = "observed")
+```
+
+
+### Save the data as an `.rds` for use with other downstream analyses
+```{r}
+#| eval: false
+## Save as .rds
+saveRDS(loopCounts, file = "data/processed/hic/YAPP_hic_loopCounts.rds")
+```
+
+```{r}
+## include sessionInfo() for reproducibility
+sessionInfo()
+```
+
+
+
+
+
+
+
+
+

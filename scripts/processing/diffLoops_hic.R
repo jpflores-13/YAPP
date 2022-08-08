@@ -1,5 +1,4 @@
-
-## use DESeq2 to call differential loops 
+## Perform differential loops analysis with DESeq2
 
 library(DESeq2)
 library(dplyr)
@@ -9,13 +8,15 @@ library(purrr)
 library(pheatmap)
 library(apeglm)
 
-# Load Data--------------
+# Load extracted loops counts ---------------------------------------------
+
 loopCounts <- readRDS("data/processed/hic/YAPP_hic_loopCounts.rds")
 
-# Add a loop_count column --------------
+## add a loop_count column
 loopCounts$loop_name <- glue("loop_{1:length(loopCounts)}")
 
-# Create a matrix --------------
+# Create a matrix for countData -------------------------------------------
+
 m <- mcols(loopCounts)[, grep("*inter.*", colnames(mcols(loopCounts)))] %>% 
   as.matrix()
 
@@ -40,9 +41,9 @@ all(colnames(m) == rownames(colData))
 # Run DESeq2 --------------------------------------------------------------
 dds <- DESeqDataSetFromMatrix(countData = m,
                        colData = colData,
-                       design = ~Replicate + Treatment)
+                       design = ~ Replicate + Treatment)
 
-## Hypothesis testing with Wald with `betaPrior = F`. No LRT because no time points in this analysis.
+## Hypothesis testing with Wald with `betaPrior = F`
 dds <- DESeq(dds)
 
 ## Plot dispersion estimates

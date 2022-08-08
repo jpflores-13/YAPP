@@ -1,16 +1,16 @@
-## Generate loop counts/ call loops for cont/sorb HEK293 cells processed with `-isDroso` parameter
+## Generate loop counts/ call loops for cont/sorb HEK293 cells processed with both `-isDroso` parameters (T/F)
 
 ## install github
 # remotes::install_github("EricSDavis/hictoolsr")
 
-## load package
 library(hictoolsr)
 library(glue)
 library(dbscan)
 library(tidyverse)
-library(InteractionSet)
+library(GenomeInfoDb)
 
-# for merging loops -----------------------------
+# Compile loop files of interest ------------------------------------------
+
 cond <- c("cont", "sorb", "omega")
 isDroso_loops <- list.files(path = glue("data/raw/hic/hg38/sip-loops/isDroso/{cond}"),
                             full.names = T,
@@ -22,17 +22,25 @@ noDroso_loops <- list.files(path = glue("data/raw/hic/hg38/sip-loops/noDroso/{co
 
 bothDroso_loops <- c(isDroso_loops, noDroso_loops)
 
-# for extracting counts -----------------------------
+
+
+# Provide .hic files to extract from --------------------------------------
+
 hic_files <- list.files(path = glue("data/raw/hic/hg38/220722_dietJuicerCore/{cond}"), full.names = T)
 
-# merge / extract -----------------------------
+
+# Merge bedpe files into one and extract counts  --------------------------
+
+## merge & convert to GInteractions
 mergedLoops <- 
   mergeBedpe(bedpeFiles = bothDroso_loops,
              res = 10000) |> 
   as_ginteractions()
 
+## rename seqstyles level
 seqlevelsStyle(mergedLoops) <- "UCSC"
 
+## Bin bedpe files to correct resolution
 mergedLoops <- mergedLoops |> 
   binBedpe(res = 10e3,
            a1Pos = "center",
@@ -42,8 +50,12 @@ loopCounts <- extractCounts(bedpe = mergedLoops,
                 hic = hic_files,
                 chroms = paste0("chr",c(1:22, "X", "Y")),
                 res = 10e3,
-                norm = "NONE",
+                norm = "NONE", ## should always be set to "NONE"
                 matrix = "observed")
+
 # save data -----------------------------
 saveRDS(loopCounts, file = "data/processed/hic/YAPP_hic_loopCounts.rds")
+
+## save sessionInfo()
+sessionInfo()
 
