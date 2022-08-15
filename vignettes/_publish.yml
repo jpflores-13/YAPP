@@ -8,3 +8,7 @@
   quarto-pub:
     - id: 37dc3a04-1934-4818-96f6-825e77919667
       url: 'https://quartopub.com/sites/jpflores/differential-loop-analysis'
+- source: tiling-across-chr1.qmd
+  quarto-pub:
+    - id: 95ed9c33-5733-44ca-8b73-1e8305305369
+      url: 'https://quartopub.com/sites/jpflores/tiling-across-chromosome-1'

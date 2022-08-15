@@ -53,7 +53,7 @@ colData <- colData[, c(1:4)]
     YAPP_HEK_sorbitol_5_2_inter_30.hic    YAPP       HEK  sorbitol         5
     YAPP_HEK_sorbitol_6_2_inter_30.hic    YAPP       HEK  sorbitol         6
 
-:::{.callout-note}
+::: callout-note
 Correct values in `Replicate` column because you need to have 2 of each replicate for differential analysis
 
 ```{r}
@@ -62,38 +62,36 @@ colData <- colData |>
   mutate(Replicate = str_replace(Replicate, "5", "2")) |> 
   mutate(Replicate = str_replace(Replicate, "6", "3"))
 ```
-
 :::
 
-:::{.callout-tip}
+::: callout-tip
 Make sure that the column names of your count matrix match your rownames of you colData. This is required for `DESeq()` to work
 
 ```{r}
 ## Make sure sample names match
 all(colnames(m) == rownames(colData))
 ```
-
 :::
 
 ### Running `DESeq()`
 
-Perform the `DESeq()` function using the Wald test. Could use different hypothesis testing, but I chose the Wald because ___.
+Perform the `DESeq()` function using the Wald test. Could use different hypothesis testing, but I chose the Wald because \_\_\_.
 
 ```{r}
 ## Hypothesis testing with Wald with `betaPrior = F`
 dds <- DESeq(dds)
 ```
 
-
 ### QC via visualization
-Plotting dispersion estimates can help with ___.
+
+Plotting dispersion estimates can help with \_\_\_.
 
 ```{r}
 plotDispEsts(dds)
 ```
 
+Performing principal component analysis can aid in \_\_\_\_\_.
 
-Performing principal component analysis can aid in _____.
 ```{r}
 ## This will create the actual plot
 plotPCA(vst(dds), intgroup = "Treatment") + ggplot2::theme(aspect.ratio = 1)
@@ -102,11 +100,12 @@ plotPCA(vst(dds), intgroup = "Treatment") + ggplot2::theme(aspect.ratio = 1)
 plotPCA(vst(dds), intgroup = "Treatment", returnData = TRUE)
 ```
 
-:::{.callout-note}
+::: callout-note
 More information on principal component analysis can be found [here]().
 :::
 
-We can always perform hierarchical clustering to _____.
+We can always perform hierarchical clustering to \_\_\_\_\_.
+
 ```{r}
 ## Extract the rlog matrix from the object
 rld_mat <- assay(rld)
@@ -118,12 +117,11 @@ rld_cor <- cor(rld_mat)
 pheatmap(rld_cor)
 ```
 
-
-:::{.callout-note}
+::: callout-note
 More information on visualizing results can be found [here](https://hbctraining.github.io/DGE_workshop/lessons/DGE_visualizing_results_archived.html).
 :::
 
-In order to see your results, _____________.
+In order to see your results, \_\_\_\_\_\_\_\_\_\_\_\_\_.
 
 ```{r}
 ## outputs
@@ -135,8 +133,7 @@ summary(res)
 
 ```
 
-
-For an MA plot, __________________.
+For an MA plot, \_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_.
 
 ```{r}
 plotMA(res, ylim=c(-4,4), main = "Differential Loops - Sorbitol-Treated (top) vs. Untreated (bottom)",
@@ -144,7 +141,8 @@ plotMA(res, ylim=c(-4,4), main = "Differential Loops - Sorbitol-Treated (top) vs
        xlab = "mean of norm. counts")
 ```
 
-To prepare your differential loops, for export combine ____________.
+To prepare your differential loops, for export combine \_\_\_\_\_\_\_\_\_\_\_\_.
+
 ```{r}
 # Concatenate loopCounts and DESeqResults ---------------------------------
 mcols(loopCounts) <- cbind(mcols(loopCounts), res)
@@ -156,13 +154,3 @@ saveRDS(diff_loopCounts, file = "data/processed/hic/YAPP_hic_diff_loopCounts.rds
 sessionInfo()
 
 ```
-
-
-
-
-
-
-
-
-
-
