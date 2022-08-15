@@ -4,3 +4,7 @@
       url: 'https://quartopub.com/sites/jpflores/extract-loop-counts'
     - id: e1c29554-86cd-4b97-9fbe-ab4a411c19cd
       url: 'https://quartopub.com/sites/jpflores/generating-loop-counts'
+- source: differential-loop-analysis.qmd
+  quarto-pub:
+    - id: 37dc3a04-1934-4818-96f6-825e77919667
+      url: 'https://quartopub.com/sites/jpflores/differential-loop-analysis'

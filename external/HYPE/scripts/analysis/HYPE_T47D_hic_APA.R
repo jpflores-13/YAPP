@@ -70,6 +70,12 @@ mats_combined <- c(cont_APA_mat,
 pdf(file = "external/HYPE/plots/HYPE_T47D_hic_APA.pdf",
     height = 3,
     width = 4.5)
+a <- dev.cur()
+
+png(file = "vignettes/assets/HYPE_T47D_hic_APA.png",
+    height = 3,
+    width = 4.5)
+dev.control("enable")
 
 ## Initiate plotgardener page
 pageCreate(width = 4.5, height = 3, showGuides = F)
@@ -140,4 +146,6 @@ plotText(label = "NaCl",
          just = c('center', 'bottom'))  
 
 
+dev.copy(which = a)
+dev.off()
 dev.off()

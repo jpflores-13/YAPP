@@ -99,6 +99,12 @@ treated_mats <- list(sorb_APA_mat_hic_YAPP = sorb_APA_mat_hic_YAPP,
 pdf(file = "plots/meta_lostLoops_APA.pdf",
     height = 3,
     width = 4.25)
+a <- dev.cur()
+
+png(file = "vignettes/assets/meta_lostLoops_APA.png",
+    height = 3,
+    width = 4.25)
+dev.control("enable")
 
 ## Initiate plotgardener page
 pageCreate(width = 4.25, height = 3, showGuides = F)
@@ -167,4 +173,6 @@ plotText(label = c("Cont", "Treated"),
          y = ypos[1:2] + p$height / 2,
          rot = 90,
          just = c('center', 'bottom'))  
+dev.copy(which = a)
+dev.off()
 dev.off()

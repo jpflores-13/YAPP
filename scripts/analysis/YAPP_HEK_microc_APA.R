@@ -70,6 +70,11 @@ mats_combined <- c(cont_APA_mat,
 pdf(file = "plots/YAPP_HEK_microc_APA.pdf",
     height = 3,
     width = 4.5)
+a <- dev.cur()
+png(file = "vignettes/assets/YAPP_HEK_microc_APA.png",
+    height = 3,
+    width = 4.5)
+dev.control("enable")
 
 ## Initiate plotgardener page
 pageCreate(width = 4.5, height = 3, showGuides = F)
@@ -140,4 +145,6 @@ plotText(label = "Sorb",
          just = c('center', 'bottom'))  
 
 
+dev.copy(which = a)
+dev.off()
 dev.off()

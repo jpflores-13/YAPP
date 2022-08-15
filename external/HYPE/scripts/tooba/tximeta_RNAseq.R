@@ -41,7 +41,7 @@ gse <- summarizeToGene(se)
 colData(gse)[] <- lapply(colData(gse), as.factor)
 
 ## Build DESeq object
-dds <- DESeqDataSet(gse, design = ~Replicates + Condition)
+dds <- DESeqDataSet(gse, design = ~Replicates + Treatment)
 
 ## Filter out lowly expressed genes (at least 10 counts in at least 4 samples)
 keep <- rowSums(counts(dds) >= 10) >= 4

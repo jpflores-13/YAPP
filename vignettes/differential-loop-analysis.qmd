@@ -1,0 +1,168 @@
+---
+title: "Differential Loop Analysis"
+author: "JP Flores"
+format: html
+editor: visual
+execute: 
+  eval: false
+---
+
+#### Load necessary packages
+
+```{r}
+#| warning: false
+library(DESeq2)
+library(dplyr)
+library(glue)
+library(stringr)
+library(purrr)
+library(pheatmap)
+library(apeglm)
+```
+
+#### Load [extracted loops](https://jpflores.quarto.pub/generating-loop-counts/).
+
+```{r}
+## Load in data 
+loopCounts <- readRDS("data/processed/hic/YAPP_hic_loopCounts.rds")
+
+## add a loop_count column
+loopCounts$loop_name <- glue("loop_{1:length(loopCounts)}")
+
+```
+
+#### Create a count matrix for countData and a metadata table that will be used later when we run the `DESeq()` function
+
+```{r}
+m <- mcols(loopCounts)[, grep("*inter.*", colnames(mcols(loopCounts)))] %>% 
+  as.matrix()
+```
+
+```{r}
+colData <- as.data.frame(do.call(rbind, strsplit(colnames(m), "_")), stringsAsFactors = T)
+rownames(colData) <- colnames(m)
+colnames(colData) <- c("Project", "Cell_Type", "Treatment", "Replicate")
+colData <- colData[, c(1:4)]
+```
+
+                                       Project Cell_Type Treatment Replicate
+    YAPP_HEK_control_1_2_inter_30.hic     YAPP       HEK   control         1
+    YAPP_HEK_control_2_2_inter_30.hic     YAPP       HEK   control         2
+    YAPP_HEK_control_3_2_inter_30.hic     YAPP       HEK   control         3
+    YAPP_HEK_sorbitol_4_2_inter_30.hic    YAPP       HEK  sorbitol         4
+    YAPP_HEK_sorbitol_5_2_inter_30.hic    YAPP       HEK  sorbitol         5
+    YAPP_HEK_sorbitol_6_2_inter_30.hic    YAPP       HEK  sorbitol         6
+
+:::{.callout-note}
+Correct values in `Replicate` column because you need to have 2 of each replicate for differential analysis
+
+```{r}
+colData <- colData |> 
+  mutate(Replicate = str_replace(Replicate, "4", "1")) |> 
+  mutate(Replicate = str_replace(Replicate, "5", "2")) |> 
+  mutate(Replicate = str_replace(Replicate, "6", "3"))
+```
+
+:::
+
+:::{.callout-tip}
+Make sure that the column names of your count matrix match your rownames of you colData. This is required for `DESeq()` to work
+
+```{r}
+## Make sure sample names match
+all(colnames(m) == rownames(colData))
+```
+
+:::
+
+### Running `DESeq()`
+
+Perform the `DESeq()` function using the Wald test. Could use different hypothesis testing, but I chose the Wald because ___.
+
+```{r}
+## Hypothesis testing with Wald with `betaPrior = F`
+dds <- DESeq(dds)
+```
+
+
+### QC via visualization
+Plotting dispersion estimates can help with ___.
+
+```{r}
+plotDispEsts(dds)
+```
+
+
+Performing principal component analysis can aid in _____.
+```{r}
+## This will create the actual plot
+plotPCA(vst(dds), intgroup = "Treatment") + ggplot2::theme(aspect.ratio = 1)
+
+## This will return results
+plotPCA(vst(dds), intgroup = "Treatment", returnData = TRUE)
+```
+
+:::{.callout-note}
+More information on principal component analysis can be found [here]().
+:::
+
+We can always perform hierarchical clustering to _____.
+```{r}
+## Extract the rlog matrix from the object
+rld_mat <- assay(rld)
+
+## Compute pairwise correlation values
+rld_cor <- cor(rld_mat)
+
+## Plot heatmap
+pheatmap(rld_cor)
+```
+
+
+:::{.callout-note}
+More information on visualizing results can be found [here](https://hbctraining.github.io/DGE_workshop/lessons/DGE_visualizing_results_archived.html).
+:::
+
+In order to see your results, _____________.
+
+```{r}
+## outputs
+res <- results(dds)
+resultsNames(dds)
+summary(res)
+res <- lfcShrink(dds, coef="Treatment_sorbitol_vs_control", type= "apeglm")
+summary(res)
+
+```
+
+
+For an MA plot, __________________.
+
+```{r}
+plotMA(res, ylim=c(-4,4), main = "Differential Loops - Sorbitol-Treated (top) vs. Untreated (bottom)",
+       ylab = "LFC",
+       xlab = "mean of norm. counts")
+```
+
+To prepare your differential loops, for export combine ____________.
+```{r}
+# Concatenate loopCounts and DESeqResults ---------------------------------
+mcols(loopCounts) <- cbind(mcols(loopCounts), res)
+diff_loopCounts <- loopCounts
+
+
+## save as .rds
+saveRDS(diff_loopCounts, file = "data/processed/hic/YAPP_hic_diff_loopCounts.rds")
+sessionInfo()
+
+```
+
+
+
+
+
+
+
+
+
+

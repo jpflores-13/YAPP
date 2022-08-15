@@ -33,28 +33,29 @@ filteredLoops |>
   summary()
 
 ## Hi-C file paths 
-cont_hic_YAPP <- "data/raw/hic/hg38/220716_dietJuicerMerge_condition/cont/YAPP_HEK_control_inter_30.hic"
-sorb_hic_YAPP <- "data/raw/hic/hg38/220716_dietJuicerMerge_condition/sorb/YAPP_HEK_sorbitol_inter_30.hic"
-cont_microc_YAPP <- "data/raw/microc/hg38_220801/220717_dietJuicerMerge_condition/cont/YAPP_HEK_cont_inter_30.hic"
-sorb_microc_YAPP <- "data/raw/microc/hg38_220801/220717_dietJuicerMerge_condition/sorb/YAPP_HEK_sorb_inter_30.hic"
+cont_hic_YAPP <- "data/raw/hic/hg38/subsamples_YAPP_HYPE/YAPP_HEK_control_subsampled_inter_30.hic"
+sorb_hic_YAPP <- "data/raw/hic/hg38/subsamples_YAPP_HYPE/YAPP_HEK_sorbitol_subsampled_inter_30.hic"
+# cont_microc_YAPP <- "data/raw/microc/hg38_220801/220717_dietJuicerMerge_condition/cont/YAPP_HEK_cont_inter_30.hic"
+# sorb_microc_YAPP <- "data/raw/microc/hg38_220801/220717_dietJuicerMerge_condition/sorb/YAPP_HEK_sorb_inter_30.hic"
 cont_hic_HYPE <- "external/HYPE/data/raw/hic/hg38/220718_dietJuicerMerge_treatment/cont/HYPE_T47D_None_inter_30.hic"
 nacl_hic_HYPE <- "external/HYPE/data/raw/hic/hg38/220718_dietJuicerMerge_treatment/nacl/HYPE_T47D_NaCl_inter_30.hic"
 
 ## Calculate APA matrices for loops from control HEK Hi-C data
 cont_APA_mat_hic_YAPP <- filteredLoops |> 
   calcApa(hic = cont_hic_YAPP, norm = norm, buffer = buffer)
+debugonce(calcApa)
 
 ## Calculate APA matrices for loops from sorbitol HEK Hi-C data
 sorb_APA_mat_hic_YAPP <- filteredLoops |> 
   calcApa(hic = sorb_hic_YAPP, norm = norm, buffer = buffer)
 
-## Calculate APA matrices for loops from control HEK Micro-C data
-cont_APA_mat_microc_YAPP <- filteredLoops |> 
-  calcApa(hic = cont_microc_YAPP, norm = norm, buffer = buffer)
-
-## Calculate APA matrices for loops from sorbitol HEK Micro-C data
-sorb_APA_mat_microc_YAPP <- filteredLoops |> 
-  calcApa(hic = sorb_microc_YAPP, norm = norm, buffer = buffer)
+# ## Calculate APA matrices for loops from control HEK Micro-C data
+# cont_APA_mat_microc_YAPP <- filteredLoops |> 
+#   calcApa(hic = cont_microc_YAPP, norm = norm, buffer = buffer)
+# 
+# ## Calculate APA matrices for loops from sorbitol HEK Micro-C data
+# sorb_APA_mat_microc_YAPP <- filteredLoops |> 
+#   calcApa(hic = sorb_microc_YAPP, norm = norm, buffer = buffer)
 
 ## Calculate APA matrices for loops from control T47D Hi-C data
 cont_APA_mat_hic_HYPE <- filteredLoops |> 
@@ -74,8 +75,8 @@ nLoops <- filteredLoops |>
 ## Divide each matrix by nLoops
 cont_APA_mat_hic_YAPP <- (cont_APA_mat_hic_YAPP/nLoops)
 sorb_APA_mat_hic_YAPP <- (sorb_APA_mat_hic_YAPP/nLoops)
-cont_APA_mat_microc_YAPP <- (cont_APA_mat_microc_YAPP/nLoops)
-sorb_APA_mat_microc_YAPP <- (sorb_APA_mat_microc_YAPP/nLoops)
+# cont_APA_mat_microc_YAPP <- (cont_APA_mat_microc_YAPP/nLoops)
+# sorb_APA_mat_microc_YAPP <- (sorb_APA_mat_microc_YAPP/nLoops)
 cont_APA_mat_hic_HYPE <- (cont_APA_mat_hic_HYPE/nLoops)
 nacl_APA_mat_hic_HYPE <- (nacl_APA_mat_hic_HYPE/nLoops)
 
@@ -83,18 +84,18 @@ nacl_APA_mat_hic_HYPE <- (nacl_APA_mat_hic_HYPE/nLoops)
 ## combine APA matrices to pull out the max value for zrange max
 mats_combined <- c(cont_APA_mat_hic_YAPP,
                 sorb_APA_mat_hic_YAPP,
-                cont_APA_mat_microc_YAPP,
-                sorb_APA_mat_microc_YAPP,
+                # cont_APA_mat_microc_YAPP,
+                # sorb_APA_mat_microc_YAPP,
                 cont_APA_mat_hic_HYPE,nacl_APA_mat_hic_HYPE)
 
 ## list control APA matrices for easy plotting
 cont_mats <- list(cont_APA_mat_hic_YAPP = cont_APA_mat_hic_YAPP,
-                  cont_APA_mat_microc_YAPP = cont_APA_mat_microc_YAPP,
+                  # cont_APA_mat_microc_YAPP = cont_APA_mat_microc_YAPP,
                   cont_APA_mat_hic_HYPE = cont_APA_mat_hic_HYPE)
 
 ## list control APA matrices for easy plotting
 treated_mats <- list(sorb_APA_mat_hic_YAPP = sorb_APA_mat_hic_YAPP,
-                     sorb_APA_mat_microc_YAPP = sorb_APA_mat_microc_YAPP,
+                     # sorb_APA_mat_microc_YAPP = sorb_APA_mat_microc_YAPP,
                      nacl_APA_mat_hic_HYPE = nacl_APA_mat_hic_HYPE)
 
 
@@ -102,6 +103,12 @@ treated_mats <- list(sorb_APA_mat_hic_YAPP = sorb_APA_mat_hic_YAPP,
 pdf(file = "plots/meta_gainedLoops_APA.pdf",
     height = 3,
     width = 4.25)
+a <- dev.cur()
+
+png(file = "vignetttes/assets/meta_gainedLoops_APA.png",
+    height = 3,
+    width = 4.25)
+dev.control("enable")
 
 ## Initiate plotgardener page
 pageCreate(width = 4.25, height = 3, showGuides = F)
@@ -141,14 +148,14 @@ annoHeatmapLegend(plot = cont_plots[[1]],
                   height = 0.1,
                   fontcolor = 'black')
 
-# Add legend
-annoHeatmapLegend(plot = cont_plots[[2]],
-                  orientation = "h",
-                  x = 1.6,
-                  y = 2.65,
-                  width = 1,
-                  height = 0.1,
-                  fontcolor = 'black')
+# # Add legend
+# annoHeatmapLegend(plot = cont_plots[[2]],
+#                   orientation = "h",
+#                   x = 1.6,
+#                   y = 2.65,
+#                   width = 1,
+#                   height = 0.1,
+#                   fontcolor = 'black')
 
 # Add legend
 annoHeatmapLegend(plot = cont_plots[[3]],
@@ -170,4 +177,6 @@ plotText(label = c("Cont", "Treated"),
          y = ypos[1:2] + p$height / 2,
          rot = 90,
          just = c('center', 'bottom'))  
+dev.copy(which = a)
+dev.off()
 dev.off()
