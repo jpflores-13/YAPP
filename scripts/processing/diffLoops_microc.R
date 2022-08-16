@@ -41,6 +41,9 @@ dds <- DESeqDataSetFromMatrix(countData = m,
                               colData = colData,
                               design = ~Replicate + Treatment)
 
+## disable DESeq's default normalization 
+sizeFactors(dds) <- rep(1, ncol(dds))
+
 ## Hypothesis testing with Wald with `betaPrior = F`. No LRT because no time points in this analysis.
 dds <- DESeq(dds)
 

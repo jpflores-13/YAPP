@@ -1,0 +1,142 @@
+---
+title: "Loop Report (08/15/2022)"
+format:
+  html:
+    code-tools: true
+editor: visual
+---
+
+All loops were called using SIP with the following parameters (example given is a merged `.hic` file for all control replicates (3) and with `-isDroso true`):
+```{bash}
+#| eval: false
+java -jar /proj/phanstiel_lab/Software/SIP/SIP_HiCv1.6.2.jar 
+
+hic /proj/phanstiel_lab/Data/processed/YAPP/hic/hg38/220716_dietJuicerMerge_condition/output/YAPP_HEK_control/YAPP_HEK_control_inter_30.hic 
+
+/proj/phanstiel_lab/References/chromSizes/hg38_chromSizes.txt 
+
+/proj/phanstiel_lab/Data/processed/YAPP/hic/hg38/220719_sip-loops/isDroso/cont 
+
+/proj/phanstiel_lab/Software/juicer/scripts/juicer_tools.jar 
+ 
+-norm SCALE -g 1.0 -min 2.0 -max 2.0 -mat 2000 -d 6 -res 5000 -sat 0.01 -t 2000 -nbZero 6 -factor 1 -fdr 0.05 -del true -cpu 1 -isDroso true"
+
+```
+### Load libraries
+
+```{r}
+#| warning: false
+#| code-fold: true
+library(hictoolsr)
+library(glue)
+library(dbscan)
+library(tidyverse)
+library(GenomeInfoDb)
+```
+
+### Load `.hic` files
+
+```{r}
+#| code-fold: true
+cond <- c("cont", "sorb", "omega")
+hic_files <- list.files(path = glue("~/Phanstiel Lab Dropbox/JP Flores/projects/YAPP/YAPP/data/raw/hic/hg38/220722_dietJuicerCore/{cond}"), full.names = T)
+```
+
+### `-isDroso true` loops by condition
+
+```{r}
+#| code-fold: true
+isDroso_loops <- list.files(path = glue("~/Phanstiel Lab Dropbox/JP Flores/projects/YAPP/YAPP/data/raw/hic/hg38/sip-loops/isDroso/{cond}"),
+                            full.names = T,
+                            pattern = "5kb")
+
+cont_isDroso_loops <- mergeBedpe("~/Phanstiel Lab Dropbox/JP Flores/projects/YAPP/YAPP/data/raw/hic/hg38/sip-loops/isDroso/cont/5kbLoops.txt", res = 10e3)
+
+sorb_isDroso_loops <- mergeBedpe("~/Phanstiel Lab Dropbox/JP Flores/projects/YAPP/YAPP/data/raw/hic/hg38/sip-loops/isDroso/sorb/5kbLoops.txt", res = 10e3)
+
+omega_isDroso_loops <- mergeBedpe("~/Phanstiel Lab Dropbox/JP Flores/projects/YAPP/YAPP/data/raw/hic/hg38/sip-loops/isDroso/omega/5kbLoops.txt", res = 10e3)
+
+isDroso_total_loops <- mergeBedpe(isDroso_loops, res = 10e3)
+```
+
+```{r}
+#| code-fold: false
+
+## control loops (`-isDroso true`)
+nrow(cont_isDroso_loops)
+
+## sorbitol loops (`-isDroso true`)
+nrow(sorb_isDroso_loops)
+
+## omega loops (`-isDroso true`)
+nrow(omega_isDroso_loops)
+
+## total # of loops (`-isDroso true`)
+nrow(isDroso_total_loops)
+```
+
+
+### `-isDroso false` loops by condition
+
+```{r}
+#| code-fold: true
+noDroso_loops <- list.files(path = glue("~/Phanstiel Lab Dropbox/JP Flores/projects/YAPP/YAPP/data/raw/hic/hg38/sip-loops/noDroso/{cond}"),
+                            full.names = T,
+                            pattern = "5kb")
+
+cont_noDroso_loops <- mergeBedpe("~/Phanstiel Lab Dropbox/JP Flores/projects/YAPP/YAPP/data/raw/hic/hg38/sip-loops/noDroso/cont/5kbLoops.txt", res = 10e3)
+
+sorb_noDroso_loops <- mergeBedpe("~/Phanstiel Lab Dropbox/JP Flores/projects/YAPP/YAPP/data/raw/hic/hg38/sip-loops/noDroso/sorb/5kbLoops.txt", res = 10e3)
+
+omega_noDroso_loops <- mergeBedpe("~/Phanstiel Lab Dropbox/JP Flores/projects/YAPP/YAPP/data/raw/hic/hg38/sip-loops/noDroso/omega/5kbLoops.txt", res = 10e3)
+
+noDroso_total_loops <- mergeBedpe(noDroso_loops, res = 10e3)
+```
+
+```{r}
+#| code-fold: false
+
+## control loops (`-isDroso false`)
+nrow(cont_noDroso_loops)
+
+## sorbitol loops (`-isDroso false`)
+nrow(sorb_noDroso_loops)
+
+## omega loops (`-isDroso false`)
+nrow(omega_noDroso_loops)
+
+## total # of loops (`-isDroso false`)
+nrow(noDroso_total_loops)
+```
+
+
+### Combining `-isDroso true` and `-isDroso false` loops
+
+```{r}
+#| code-fold: true
+noDroso_loops <- list.files(path = glue("~/Phanstiel Lab Dropbox/JP Flores/projects/YAPP/YAPP/data/raw/hic/hg38/sip-loops/noDroso/{cond}"),
+                            full.names = T,
+                            pattern = "5kb")
+
+isDroso_loops <- list.files(path = glue("~/Phanstiel Lab Dropbox/JP Flores/projects/YAPP/YAPP/data/raw/hic/hg38/sip-loops/isDroso/{cond}"),
+                            full.names = T,
+                            pattern = "5kb")
+
+bothDroso_loops <- c(isDroso_loops, noDroso_loops)
+
+bothDroso_total_loops <- mergeBedpe(bothDroso_loops, res = 10e3)
+```
+
+```{r}
+#| code-fold: false
+
+## combining ALL loops (`-isDroso true & false`)
+nrow(bothDroso_total_loops)
+```
+
+:::{.callout-note}
+This report was created because we mentioned that these loop numbers were pretty high.
+:::
+
+
+

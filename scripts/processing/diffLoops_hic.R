@@ -43,6 +43,9 @@ dds <- DESeqDataSetFromMatrix(countData = m,
                        colData = colData,
                        design = ~ Replicate + Treatment)
 
+## disable DESeq's default normalization 
+sizeFactors(dds) <- rep(1, ncol(dds))
+
 ## Hypothesis testing with Wald with `betaPrior = F`
 dds <- DESeq(dds)
 
@@ -79,7 +82,7 @@ res <- lfcShrink(dds, coef="Treatment_sorbitol_vs_control", type= "apeglm")
 
 summary(res)
 pdf(file = "plots/YAPP_diffLoops_sorb_MA_hic.pdf")
-plotMA(res, ylim=c(-4,4), main = "Differential Loops - Sorbitol-Treated (top) vs. Untreated (bottom)",
+plotMA(res, ylim=c(-4,4), main = "Differential Loop Analysis",
        ylab = "LFC",
        xlab = "mean of norm. counts")
 dev.off()

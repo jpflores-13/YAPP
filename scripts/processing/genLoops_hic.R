@@ -22,8 +22,6 @@ noDroso_loops <- list.files(path = glue("data/raw/hic/hg38/sip-loops/noDroso/{co
 
 bothDroso_loops <- c(isDroso_loops, noDroso_loops)
 
-
-
 # Provide .hic files to extract from --------------------------------------
 
 hic_files <- list.files(path = glue("data/raw/hic/hg38/220722_dietJuicerCore/{cond}"), full.names = T)
