@@ -12,23 +12,13 @@ library(data.table)
 
 diff_loopCounts <- readRDS("data/processed/hic/YAPP_hic_diff_loopCounts.rds")
 
-# Setting static and lost loops -------------------------------------------
-
-## all loops with a p-value > 0.05
-static <- subset(diff_loopCounts, pvalue > 0.05)
-static
-
-## lost loops are loops with a p-value < 0.05 and a (-) log2FoldChange
-lost <- subset(diff_loopCounts, pvalue <= 0.05 & log2FoldChange < 0)
-lost
+# Setting lost loops -------------------------------------------
 
 lost_adj <- subset(diff_loopCounts, padj < 0.1 & log2FoldChange < 0)
-lost_adj
 
 ## filter for the best lost loops
 bestLost <- head(lost_adj[order(lost_adj$log2FoldChange, decreasing = T)],100)
 bestLost <- head(lost_adj[order(lost_adj$pvalue, decreasing = F)], 100)
-bestLost
 
 # # all lost loops
 # loopRegions <-
@@ -65,7 +55,7 @@ omega_loops <- readRDS("data/processed/hic/omega_bothDroso_loops.rds")
 
 ##make pdf
 pdf(file = "plots/YAPP_HEK_hic_lostLoops_rect.pdf",
-    width = 5.5,
+    width = 7,
     height = 8)
 
 ## Loop through each region
@@ -89,34 +79,60 @@ for(i in 1:nrow(loopRegions_lost)){
   
   # Begin Visualization -----------------------------------------------------
   ## Make page
-  pageCreate(width = 5.5, height = 8,
+  pageCreate(width = 7, height = 8,
              xgrid = 0, ygrid = 0, showGuides = F)
   
   ## Plot top omega Hi-C rectangle + annotate
   omega <- 
     plotHicRectangle(data = "data/raw/hic/hg38/220716_dietJuicerMerge_omega/YAPP_HEK_inter_30.hic", 
                      params = p,
-                     y = 0.5) |> 
-    annoPixels(data = omega_loops,
+                     y = 0.5)
+    
+  annoPixels(omega, data = omega_loops,
                shift = 0.5)
   
-  ## Plot middle Hi-C rectangle + SIP `-isDroso = TRUE` & `-isDroso = TRUE` calls 
+  ## Plot middle Hi-C rectangle 
   
   control <-
     plotHicRectangle(data = "data/raw/hic/hg38/220716_dietJuicerMerge_condition/cont/YAPP_HEK_control_inter_30.hic",
                      params = p,
-                     y = 2.75) |> 
-    annoPixels(data = cont_loops,
-               shift = 1)
+                     y = 2.75)
   
-  ## Plot bottom Hi-C rectangle + SIP `-isDroso = TRUE` & `-isDroso = TRUE` calls
+  ## annotate all pixels called with both `-isDroso true` and `-isDroso false` parameters
+  annoPixels(control, data = omega_loops,
+               shift = 0.5, 
+               col = "black")
+  
+  ## annotate all pixels called with `-isDroso true`
+  annoPixels(control, data = "data/raw/hic/hg38/sip-loops/isDroso/cont/5kbLoops.txt",
+             shift = 0.5,
+             col = "green")
+  
+  ## annotate all pixels called with `-isDroso false`
+  annoPixels(control, data = "data/raw/hic/hg38/sip-loops/noDroso/cont/5kbLoops.txt",
+             shift = 0.5, 
+             col = "red")
+  
+  ## Plot bottom Hi-C rectangle 
   
   sorb <- 
     plotHicRectangle(data = "data/raw/hic/hg38/220716_dietJuicerMerge_condition/sorb/YAPP_HEK_sorbitol_inter_30.hic", 
                      params = p,
-                     y = 5) |> 
-    annoPixels(data = sorb_loops, 
-               shift = 1)
+                     y = 5) 
+  
+  ## annotate all pixels called with both `-isDroso true` and `-isDroso false` parameters
+  annoPixels(sorb, data = omega_loops, 
+             shift = 0.5)
+  
+  ## annotate all pixels called with `-isDroso true`
+  annoPixels(sorb, data = "data/raw/hic/hg38/sip-loops/isDroso/sorb/5kbLoops.txt",
+             shift = 0.5, 
+             col = "green")
+  
+  ## annotate all pixels called with `-isDroso false`
+  annoPixels(sorb, data = "data/raw/hic/hg38/sip-loops/noDroso/sorb/5kbLoops.txt",
+             shift = 0.5, 
+             col = "red")
   
   ## Plot genes
   plotGenes(param = p,
@@ -146,6 +162,13 @@ for(i in 1:nrow(loopRegions_lost)){
            x = 0.25,
            y = 4.85,
            just = c("top", "left"))
+  
+  plotLegend(legend = c("-isDroso true", "-isDroso false", "omega loops"),
+             fill = c("green", "red", "black"),
+             border = FALSE,
+             x = 5.5, y = 3, width = 1.5, height = 0.7,
+             just = c("left", "top"),
+             default.units = "inches")
   
   plotText(label = sprintf("Lost YAPP Loop %s", i),
            x = 2.75,

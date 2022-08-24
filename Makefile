@@ -30,8 +30,7 @@ objects :=\
 	vignetttes/assets/meta_gainedLoops_APA.png\
 	vignettes/assets/HYPE_T47D_hic_APA.png\
 	vignettes/assets/YAPP_HEK_microc_APA.png\
-	vignettes/assets/YAPP_HEK_hic_APA.png\
-	data/processed/rna/YAPP_HEK_rnaseq_anchors.rds
+	vignettes/assets/YAPP_HEK_hic_APA.png
 	
 
 all: $(objects)
@@ -314,9 +313,6 @@ data/processed/rna/gainedLoop_genes.txt:\
 	scripts/analysis/YAPP_HEK_rnaseq_anchors_boxplots.R
 		mkdir -p data/processed
 		Rscript scripts/analysis/YAPP_HEK_rnaseq_anchors_boxplots.RA
-
-
-
 
 
 

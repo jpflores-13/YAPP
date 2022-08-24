@@ -43,7 +43,6 @@ nacl_hic_HYPE <- "external/HYPE/data/raw/hic/hg38/220718_dietJuicerMerge_treatme
 ## Calculate APA matrices for loops from control HEK Hi-C data
 cont_APA_mat_hic_YAPP <- filteredLoops |> 
   calcApa(hic = cont_hic_YAPP, norm = norm, buffer = buffer)
-debugonce(calcApa)
 
 ## Calculate APA matrices for loops from sorbitol HEK Hi-C data
 sorb_APA_mat_hic_YAPP <- filteredLoops |> 

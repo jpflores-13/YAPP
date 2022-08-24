@@ -94,7 +94,7 @@ dds <- DESeqDataSetFromMatrix(countData = m,
 
 Rather than using `DESeq()`'s default normalization method (Median of ratios method), we can turn this off by setting the size factors of our `dds` object manually. Here, we set the size factors of each column to 1.
 
-:::{.callout-important}
+::: callout-important
 THIS IS THE DIFFERENCE MAKER!
 :::
 
@@ -171,7 +171,6 @@ plotMA(res_LRT, ylim=c(-4,4), main = "Differential Loops Analysis - LRT",
        ylab = "LFC",
        xlab = "mean of norm. counts")
 ```
-
 
 ```{r}
 #| code-fold: show

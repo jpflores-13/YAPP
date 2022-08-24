@@ -621,7 +621,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb25-108"><a href="#cb25-108" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb25-109"><a href="#cb25-109" aria-hidden="true" tabindex="-1"></a>Rather than using <span class="in">`DESeq()`</span>'s default normalization method (Median of ratios method), we can turn this off by setting the size factors of our <span class="in">`dds`</span> object manually. Here, we set the size factors of each column to 1.</span>
 <span id="cb25-110"><a href="#cb25-110" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb25-111"><a href="#cb25-111" aria-hidden="true" tabindex="-1"></a>:::{.callout-important}</span>
+<span id="cb25-111"><a href="#cb25-111" aria-hidden="true" tabindex="-1"></a>::: callout-important</span>
 <span id="cb25-112"><a href="#cb25-112" aria-hidden="true" tabindex="-1"></a>THIS IS THE DIFFERENCE MAKER!</span>
 <span id="cb25-113"><a href="#cb25-113" aria-hidden="true" tabindex="-1"></a>:::</span>
 <span id="cb25-114"><a href="#cb25-114" aria-hidden="true" tabindex="-1"></a></span>
@@ -699,17 +699,16 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb25-206"><a href="#cb25-206" aria-hidden="true" tabindex="-1"></a>       <span class="at">xlab =</span> <span class="st">"mean of norm. counts"</span>)</span>
 <span id="cb25-207"><a href="#cb25-207" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb25-208"><a href="#cb25-208" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb25-209"><a href="#cb25-209" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb25-212"><a href="#cb25-212" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb25-213"><a href="#cb25-213" aria-hidden="true" tabindex="-1"></a><span class="co">#| code-fold: show</span></span>
-<span id="cb25-214"><a href="#cb25-214" aria-hidden="true" tabindex="-1"></a><span class="fu">plotMA</span>(res_W, <span class="at">ylim=</span><span class="fu">c</span>(<span class="sc">-</span><span class="dv">4</span>,<span class="dv">4</span>), <span class="at">main =</span> <span class="st">"Differential Loops Analysis - Wald"</span>,</span>
-<span id="cb25-215"><a href="#cb25-215" aria-hidden="true" tabindex="-1"></a>       <span class="at">ylab =</span> <span class="st">"LFC"</span>,</span>
-<span id="cb25-216"><a href="#cb25-216" aria-hidden="true" tabindex="-1"></a>       <span class="at">xlab =</span> <span class="st">"mean of norm. counts"</span>)</span>
-<span id="cb25-217"><a href="#cb25-217" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb25-218"><a href="#cb25-218" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb25-219"><a href="#cb25-219" aria-hidden="true" tabindex="-1"></a>::: callout-note</span>
-<span id="cb25-220"><a href="#cb25-220" aria-hidden="true" tabindex="-1"></a>This report was created to compare the differences between using the Wald test, the LRT test, and different normalization methods.</span>
-<span id="cb25-221"><a href="#cb25-221" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb25-211"><a href="#cb25-211" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb25-212"><a href="#cb25-212" aria-hidden="true" tabindex="-1"></a><span class="co">#| code-fold: show</span></span>
+<span id="cb25-213"><a href="#cb25-213" aria-hidden="true" tabindex="-1"></a><span class="fu">plotMA</span>(res_W, <span class="at">ylim=</span><span class="fu">c</span>(<span class="sc">-</span><span class="dv">4</span>,<span class="dv">4</span>), <span class="at">main =</span> <span class="st">"Differential Loops Analysis - Wald"</span>,</span>
+<span id="cb25-214"><a href="#cb25-214" aria-hidden="true" tabindex="-1"></a>       <span class="at">ylab =</span> <span class="st">"LFC"</span>,</span>
+<span id="cb25-215"><a href="#cb25-215" aria-hidden="true" tabindex="-1"></a>       <span class="at">xlab =</span> <span class="st">"mean of norm. counts"</span>)</span>
+<span id="cb25-216"><a href="#cb25-216" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb25-217"><a href="#cb25-217" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-218"><a href="#cb25-218" aria-hidden="true" tabindex="-1"></a>::: callout-note</span>
+<span id="cb25-219"><a href="#cb25-219" aria-hidden="true" tabindex="-1"></a>This report was created to compare the differences between using the Wald test, the LRT test, and different normalization methods.</span>
+<span id="cb25-220"><a href="#cb25-220" aria-hidden="true" tabindex="-1"></a>:::</span>
 </code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>
 </div> <!-- /content -->

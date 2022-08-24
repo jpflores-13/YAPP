@@ -1,6 +1,6 @@
 
 ## Gained differential loop visualizations (HiC rectangles)
-
+## We decided to use our Hi-C data for downstream analyses. These scripts will live here for reference.
 
 # Load data ---------------------------------------------------------------
 library(plotgardener)

@@ -1,0 +1,1 @@
+## Function for dealing with contigs (hg38)
