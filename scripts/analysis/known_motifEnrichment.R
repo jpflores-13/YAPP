@@ -1,3 +1,5 @@
+## Known (biased) motif enrichment at gained and lost loop anchors
+
 # Creating focal and background ATAC peaks --------------------------------
 
 ## library set-up
@@ -83,19 +85,19 @@ sequence_focal_lost <- focal_peaks_lost |>
 
 options(meme_db = system.file("extdata/HOCOMOCOv11_full_HUMAN_mono_meme_format.meme", package = "memes", mustWork = TRUE))
 
-ame_gained <- runAme(input = sequence_focal_gained, control = sequence_background,
-                     outdir = "tables/atac/gained")
-write_tsv(ame_gained, file = "tables/atac/gained/ame.tsv")
+# ame_gained <- runAme(input = sequence_focal_gained, control = sequence_background,
+#                      outdir = "tables/atac/gained")
+ame_gained <- read.table("tables/atac/known/gained/ame.tsv", header = T, fill = T)
 
 View(ame_gained)
 
-ame_lost <- runAme(input = sequence_focal_lost, control = sequence_background,
-              outdir = "tables/atac/lost")
-write_tsv(ame_lost, file = "tables/atac/lost/ame.tsv")
+# ame_lost <- runAme(input = sequence_focal_lost, control = sequence_background,
+#               outdir = "tables/atac/lost")
+ame_lost <- read.table("tables/atac/known/lost/ame.tsv", header = T, fill = T)
 
 View(ame_lost)
 
-# Visualization -----------------------------------------------------------
+Visualization -----------------------------------------------------------
 ame_gained_top <- ame_gained |> 
   mutate(log10pval = (-log10(pvalue))) |>
   mutate(motif_id = str_remove(motif_id, "_.*")) |> 
@@ -125,7 +127,7 @@ top_ame_lost <- ame_lost_top |>
 library(plotgardener)
 
 ##make pdf
-pdf(file = "plots/motifEnrichment_meme.pdf",
+pdf(file = "plots/known_motifEnrichment.pdf",
     width = 10,
     height = 7)
 
