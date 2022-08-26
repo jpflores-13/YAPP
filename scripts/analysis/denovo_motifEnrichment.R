@@ -83,7 +83,7 @@ sequence_focal_gained <- focal_peaks_gained |>
 sequence_focal_lost <- focal_peaks_lost |> 
   get_sequence(human.genome) 
 
-options(meme_db = system.file("extdata/HOCOMOCOv11_full_HUMAN_mono_meme_format.meme", package = "memes", mustWork = TRUE))
+options(meme_db = "data/raw/atac/meme_files/HOCOMOCOv11_full_HUMAN_mono_meme_format.meme")
 
 de_novo_gained <- runStreme(input = sequence_focal_gained, control = sequence_background,
                             outdir = "tables/atac/de_novo/gained")
