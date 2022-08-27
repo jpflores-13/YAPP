@@ -86,10 +86,12 @@ sequence_focal_lost <- focal_peaks_lost |>
 options(meme_db = "data/raw/atac/meme_files/HOCOMOCOv11_full_HUMAN_mono_meme_format.meme")
 
 ame_gained <- runAme(input = sequence_focal_gained, control = sequence_background,
-                     outdir = "tables/atac/gained")
+                     outdir = "tables/atac/known/gained")
+
+streme_gained <- runStreme()
 
 ame_lost <- runAme(input = sequence_focal_lost, control = sequence_background,
-              outdir = "tables/atac/lost")
+              outdir = "tables/atac/known/lost")
 
 Visualization -----------------------------------------------------------
 ame_gained_top <- ame_gained |> 
