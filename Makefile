@@ -34,7 +34,6 @@ objects :=\
 	plots/known_motifEnrichment.pdf\
 	plots/denovo_motifEnrichment.pdf
 	
-
 all: $(objects)
 	echo done!
 
@@ -314,12 +313,26 @@ data/processed/rna/gainedLoop_genes.txt:\
 	data/processed/hic/YAPP_hic_diff_loopCounts.rds\
 	scripts/analysis/YAPP_HEK_rnaseq_anchors_boxplots.R
 		mkdir -p data/processed
-		Rscript scripts/analysis/YAPP_HEK_rnaseq_anchors_boxplots.RA
+		Rscript scripts/analysis/YAPP_HEK_rnaseq_anchors_boxplots.R
 		
 plots/known_motifEnrichment.pdf:\
+	data/processed/hic/YAPP_hic_loopCounts.rds\
+	data/raw/atac/output/peaks/YAPP_HEK_1_peakCounts.tsv\
+	data/processed/hic/YAPP_hic_diff_loopCounts.rds\
+	data/raw/atac/meme_files/HOCOMOCOv11_full_HUMAN_mono_meme_format.meme\
+	scripts/analysis/known_motifEnrichment.R
+		mkdir -p plots/
+		Rscript scripts/analysis/known_motifEnrichment.R
+	
 
 plots/denovo_motifEnrichment.pdf:\
-
+	data/processed/hic/YAPP_hic_loopCounts.rds\
+	data/raw/atac/output/peaks/YAPP_HEK_1_peakCounts.tsv\
+	data/processed/hic/YAPP_hic_diff_loopCounts.rds\
+	data/raw/atac/meme_files/HOCOMOCOv11_full_HUMAN_mono_meme_format.meme\
+	scripts/analysis/denovo_motifEnrichment.R
+		mkdir -p plots/
+		Rscript scripts/analysis/denovo_motifEnrichment.R
 
 
 

@@ -88,14 +88,10 @@ options(meme_db = "data/raw/atac/meme_files/HOCOMOCOv11_full_HUMAN_mono_meme_for
 de_novo_gained <- runStreme(input = sequence_focal_gained, control = sequence_background,
                             outdir = "tables/atac/de_novo/gained")
 
-View(de_novo_gained)
-
 de_novo_lost <- runStreme(input = sequence_focal_lost, control = sequence_background,
                           outdir = "tables/atac/de_novo/lost")
 
-View(de_novo_lost)
-
-Visualization -----------------------------------------------------------
+# Visualization -----------------------------------------------------------
   de_novo_gained_top <- de_novo_gained |> 
   mutate(log10pval = (-log10(pvalue))) |>
   mutate(motif_id = str_remove(motif_id, "_.*")) |> 

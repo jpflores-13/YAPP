@@ -83,19 +83,13 @@ sequence_focal_gained <- focal_peaks_gained |>
 sequence_focal_lost <- focal_peaks_lost |> 
   get_sequence(human.genome) 
 
-options(meme_db = system.file("extdata/HOCOMOCOv11_full_HUMAN_mono_meme_format.meme", package = "memes", mustWork = TRUE))
+options(meme_db = "data/raw/atac/meme_files/HOCOMOCOv11_full_HUMAN_mono_meme_format.meme")
 
-# ame_gained <- runAme(input = sequence_focal_gained, control = sequence_background,
-#                      outdir = "tables/atac/gained")
-ame_gained <- read.table("tables/atac/known/gained/ame.tsv", header = T, fill = T)
+ame_gained <- runAme(input = sequence_focal_gained, control = sequence_background,
+                     outdir = "tables/atac/gained")
 
-View(ame_gained)
-
-# ame_lost <- runAme(input = sequence_focal_lost, control = sequence_background,
-#               outdir = "tables/atac/lost")
-ame_lost <- read.table("tables/atac/known/lost/ame.tsv", header = T, fill = T)
-
-View(ame_lost)
+ame_lost <- runAme(input = sequence_focal_lost, control = sequence_background,
+              outdir = "tables/atac/lost")
 
 Visualization -----------------------------------------------------------
 ame_gained_top <- ame_gained |> 

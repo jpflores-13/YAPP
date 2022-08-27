@@ -89,7 +89,8 @@ for(i in 1:nrow(loopRegions_lost)){
                      y = 0.5)
     
   annoPixels(omega, data = omega_loops,
-               shift = 0.5)
+             type = "arrow",
+             shift = 0.5)
   
   ## Plot middle Hi-C rectangle 
   
@@ -100,8 +101,9 @@ for(i in 1:nrow(loopRegions_lost)){
   
   ## annotate all pixels called with both `-isDroso true` and `-isDroso false` parameters
   annoPixels(control, data = omega_loops,
-               shift = 0.5, 
-               col = "black")
+             shift = 0.5, 
+             type = "arrow",
+             col = "black")
   
   ## annotate all pixels called with `-isDroso true`
   annoPixels(control, data = "data/raw/hic/hg38/sip-loops/isDroso/cont/5kbLoops.txt",
@@ -110,6 +112,7 @@ for(i in 1:nrow(loopRegions_lost)){
   
   ## annotate all pixels called with `-isDroso false`
   annoPixels(control, data = "data/raw/hic/hg38/sip-loops/noDroso/cont/5kbLoops.txt",
+             type = "arrow",
              shift = 0.5, 
              col = "red")
   
@@ -121,17 +124,20 @@ for(i in 1:nrow(loopRegions_lost)){
                      y = 5) 
   
   ## annotate all pixels called with both `-isDroso true` and `-isDroso false` parameters
-  annoPixels(sorb, data = omega_loops, 
+  annoPixels(sorb, data = omega_loops,
+             type = "arrow",
              shift = 0.5)
   
   ## annotate all pixels called with `-isDroso true`
   annoPixels(sorb, data = "data/raw/hic/hg38/sip-loops/isDroso/sorb/5kbLoops.txt",
-             shift = 0.5, 
+             shift = 0.5,
+             type = "arrow",
              col = "green")
   
   ## annotate all pixels called with `-isDroso false`
   annoPixels(sorb, data = "data/raw/hic/hg38/sip-loops/noDroso/sorb/5kbLoops.txt",
              shift = 0.5, 
+             type = "arrow",
              col = "red")
   
   ## Plot genes
