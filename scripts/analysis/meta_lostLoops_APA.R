@@ -33,8 +33,8 @@ filteredLoops |>
   summary()
 
 ## Hi-C file paths 
-cont_hic_YAPP <- "data/raw/hic/hg38/220716_dietJuicerMerge_condition/cont/YAPP_HEK_control_inter_30.hic"
-sorb_hic_YAPP <- "data/raw/hic/hg38/220716_dietJuicerMerge_condition/sorb/YAPP_HEK_sorbitol_inter_30.hic"
+cont_hic_YAPP <- "data/raw/hic/hg38/subsamples_YAPP_HYPE/YAPP_HEK_control_subsampled_inter_30.hic"
+sorb_hic_YAPP <- "data/raw/hic/hg38/subsamples_YAPP_HYPE/YAPP_HEK_sorbitol_subsampled_inter_30.hic"
 cont_hic_HYPE <- "external/HYPE/data/raw/hic/hg38/220718_dietJuicerMerge_treatment/cont/HYPE_T47D_None_inter_30.hic"
 nacl_hic_HYPE <- "external/HYPE/data/raw/hic/hg38/220718_dietJuicerMerge_treatment/nacl/HYPE_T47D_NaCl_inter_30.hic"
 
@@ -126,12 +126,26 @@ annoHeatmapLegend(plot = cont_HYPE_APA,
                   fontcolor = 'black')
 
 ## Add text labels
-plotText(label = "HEK Hi-C",
+plotText(label = "HEK293",
+         fontcolor = "#63666A",
+         x = 1,
+         y = 0.2,
+         just = c('center', 'bottom'))
+
+plotText(label = "Hi-C Data",
+         fontcolor = "#63666A",
          x = 1,
          y = 0.4,
          just = c('center', 'bottom'))
 
-plotText(label = "T47D Hi-C",
+plotText(label = "Amat et al",
+         fontcolor = "#63666A",
+         x = 2.1,
+         y = 0.2,
+         just = c('center', 'bottom'))
+
+plotText(label = "T47D Hi-C Data",
+         fontcolor = "#63666A",
          x = 2.1,
          y = 0.4,
          just = c('center', 'bottom'))

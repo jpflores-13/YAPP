@@ -88,12 +88,10 @@ options(meme_db = "data/raw/atac/meme_files/HOCOMOCOv11_full_HUMAN_mono_meme_for
 ame_gained <- runAme(input = sequence_focal_gained, control = sequence_background,
                      outdir = "tables/atac/known/gained")
 
-streme_gained <- runStreme()
-
 ame_lost <- runAme(input = sequence_focal_lost, control = sequence_background,
               outdir = "tables/atac/known/lost")
 
-Visualization -----------------------------------------------------------
+# Visualization -----------------------------------------------------------
 ame_gained_top <- ame_gained |> 
   mutate(log10pval = (-log10(pvalue))) |>
   mutate(motif_id = str_remove(motif_id, "_.*")) |> 

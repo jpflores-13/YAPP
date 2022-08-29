@@ -70,7 +70,8 @@ nacl_APA_mat_hic_HYPE <- (nacl_APA_mat_hic_HYPE/nLoops)
 ## combine APA matrices to pull out the max value for zrange max
 mats_combined <- c(cont_APA_mat_hic_YAPP,
                 sorb_APA_mat_hic_YAPP,
-                cont_APA_mat_hic_HYPE,nacl_APA_mat_hic_HYPE)
+                cont_APA_mat_hic_HYPE,
+                nacl_APA_mat_hic_HYPE)
 
 # Create plotgardener page ------------------------------------------------
 pdf(file = "plots/meta_gainedLoops_APA.pdf",
@@ -126,23 +127,39 @@ annoHeatmapLegend(plot = cont_HYPE_APA,
                   fontcolor = 'black')
 
 ## Add text labels
-plotText(label = "HEK Hi-C",
+plotText(label = "HEK293",
+         fontcolor = "#63666A",
+         x = 1,
+         y = 0.2,
+         just = c('center', 'bottom'))
+
+plotText(label = "Hi-C Data",
+         fontcolor = "#63666A",
          x = 1,
          y = 0.4,
          just = c('center', 'bottom'))
 
-plotText(label = "T47D Hi-C",
+plotText(label = "Amat et al",
+         fontcolor = "#63666A",
+         x = 2.1,
+         y = 0.2,
+         just = c('center', 'bottom'))
+
+plotText(label = "T47D Hi-C Data",
+         fontcolor = "#63666A",
          x = 2.1,
          y = 0.4,
          just = c('center', 'bottom'))
 
 plotText(label = "Cont",
+         fontcolor = "#63666A",
          x = 0.4,
          y = 1,
          rot = 90,
          just = c('center', 'bottom'))  
 
 plotText(label = "Treated",
+         fontcolor = "#63666A",
          x = 0.4,
          y = 2.15,
          rot = 90,
