@@ -76,26 +76,33 @@ background_peaks[seqnames(background_peaks) == "chrUn_KI270442v1"][41] <-
 sequence_background <- background_peaks |>
   get_sequence(human.genome)
 
+# write_fasta(sequence_background, path = "data/processed/atac/motifs_fasta/sequence_background.fasta")
+
 ## get sequences of focal peaks
 sequence_focal_gained <- focal_peaks_gained |> 
   get_sequence(human.genome) 
 
+# write_fasta(sequence_focal_gained, path = "data/processed/atac/motifs_fasta/sequence_focal_gained.fasta")
+
 sequence_focal_lost <- focal_peaks_lost |> 
   get_sequence(human.genome) 
 
-options(meme_db = "data/raw/atac/meme_files/HOCOMOCOv11_full_HUMAN_mono_meme_format.meme")
+# write_fasta(sequence_focal_lost, path = "data/processed/atac/motifs_fasta/sequence_focal_lost.fasta")
 
-de_novo_gained <- runStreme(input = sequence_focal_gained, control = sequence_background,
-                            outdir = "tables/atac/de_novo/gained")
+## table produced from UI interface <https://meme-suite.org/meme//opal-jobs/appXSTREME_5.4.116637996115651344588321/xstreme.html>
+de_novo_gained <- read.table("tables/atac/de_novo/gained/xstreme/xstreme.tsv",
+                             fill = T,
+                             header = T) 
 
-de_novo_lost <- runStreme(input = sequence_focal_lost, control = sequence_background,
-                          outdir = "tables/atac/de_novo/lost")
+de_novo_lost <- read.table("tables/atac/de_novo/lost/streme/",
+                           fill = T, 
+                           header = T)
 
 # Visualization -----------------------------------------------------------
   de_novo_gained_top <- de_novo_gained |> 
-  mutate(log10pval = (-log10(pvalue))) |>
-  mutate(motif_id = str_remove(motif_id, "_.*")) |> 
-  arrange(rank) |> 
+  mutate(log10pval = (-log10(SEA_PVALUE))) |>
+  mutate(motif_id = str_remove(SIM_SOURCE, "_HUMAN.H11MO")) |> 
+  arrange(log10pval) |> 
   slice_head(n = 50)
 
 de_novo_lost_top <- de_novo_lost |> 
@@ -105,9 +112,9 @@ de_novo_lost_top <- de_novo_lost |>
   slice_head(n = 50)
 
 top_de_novo_gained <- de_novo_gained_top |> 
-  ggplot(aes(x = reorder(motif_id, -log10pval), y = log10pval)) +
+  ggplot(aes(x = fct_reorder(motif_id, -log10pval), y = log10pval)) +
   geom_col(fill = "steelblue") +
-  labs(title = "Motif Enrichment at Gained Loop Anchors", x = "") +
+  labs(title = "Gained Loop Anchors", x = "") +
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 60, hjust=1))
 

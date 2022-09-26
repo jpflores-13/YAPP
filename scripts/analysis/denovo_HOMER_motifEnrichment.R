@@ -1,16 +1,18 @@
-## Known (biased) motif enrichment at gained and lost loop anchors
-
-# Creating focal and background ATAC peaks --------------------------------
+# Motif Enrichment Analysis using monaLisa
 
 ## library set-up
+library(SummarizedExperiment)
+library(JASPAR2020)
+library(TFBSTools)
+library(monaLisa)
+library(ComplexHeatmap)
+library(circlize)
 library(InteractionSet)
-library(BSgenome.Hsapiens.UCSC.hg38)
+library(TxDb.Hsapiens.UCSC.hg38.knownGene)
 library(GenomicRanges)
 library(nullranges)
 library(RColorBrewer)
-library(glue)
 library(hictoolsr)
-library(memes)
 library(plyranges)
 library(tidyverse)
 library(glue)
@@ -28,8 +30,8 @@ peaks <- read.table("data/raw/atac/output/peaks/YAPP_HEK_1_peakCounts.tsv", head
 # Background Peak Set-up --------------------------------------------------
 ## all ATAC peaks at ANY loop anchor
 background_peaks <- GRanges(seqnames = Rle(peaks$chr), 
-                     ranges = IRanges(start = peaks$start, end = peaks$stop), 
-                     peak = rownames(peaks))
+                            ranges = IRanges(start = peaks$start, end = peaks$stop), 
+                            peak = rownames(peaks))
 
 # Foreground Peak set-up --------------------------------------------------
 ## import differential loops
@@ -46,7 +48,7 @@ lost_loops <- diffLoops |>
 focal_peaks_gained  <- subsetByOverlaps(background_peaks, gained_loops)
 focal_peaks_lost <- subsetByOverlaps(background_peaks, lost_loops)
 
-# Prep for MEME ----------------------------------------------------------
+# Prep for  ----------------------------------------------------------
 human.genome <- BSgenome.Hsapiens.UCSC.hg38::BSgenome.Hsapiens.UCSC.hg38
 
 ## for MEME, need to make sure you're using 1-base ranges
@@ -83,78 +85,35 @@ sequence_focal_gained <- focal_peaks_gained |>
 sequence_focal_lost <- focal_peaks_lost |> 
   get_sequence(human.genome) 
 
-# options(meme_db = "data/raw/atac/meme_files/HOCOMOCOv11_full_HUMAN_mono_meme_format.meme")
+# Prep for HOMER ----------------------------------------------------------
+txdb <- makeTxDbFromEnsembl(organism="Homo sapiens",
+                            release=NA,
+                            circ_seqs=NULL,
+                            server="ensembldb.ensembl.org",
+                            username="anonymous", password=NULL, port=0L,
+                            tx_attrib=NULL)
 
-# ame_gained <- runAme(input = sequence_focal_gained, control = sequence_background,
-#                      outdir = "tables/atac/known/gained")
-# 
-# ame_lost <- runAme(input = sequence_focal_lost, control = sequence_background,
-#               outdir = "tables/atac/known/lost")
-
-ame_gained <- read.table("tables/atac/known/gained/ame.tsv",
-                         header = T)
-
-ame_lost <- read.table("tables/atac/known/lost/ame.tsv",
-                         header = T)
-
-
-# Visualization -----------------------------------------------------------
-ame_gained_top <- ame_gained |> 
-  mutate(log10pval = (-log10(p.value))) |>
-  mutate(short_motif_id = str_remove(motif_ID, "_HUMAN.H11MO")) |> 
-  arrange(rank) |> 
-  slice_head(n = 50)
-
-ame_lost_top <- ame_lost |> 
-  mutate(log10pval = (-log10(p.value))) |> 
-  mutate(short_motif_id = str_remove(motif_ID, "_HUMAN.H11MO")) |> 
-  arrange(rank) |> 
-  slice_head(n = 50)
-
-top_ame_gained <- ame_gained_top |> 
-  ggplot(aes(x = fct_reorder(short_motif_id, -log10pval), y = log10pval)) +
-  geom_col(fill = "steelblue") +
-  labs(title = "Gained Loop Anchors", x = "") +
-  theme_classic() +
-  theme(axis.text.x = element_text(angle = 60, hjust=1))
-
-top_ame_lost <- ame_lost_top |> 
-  ggplot(aes(x = fct_reorder(short_motif_id, -log10pval), y = log10pval)) +
-  geom_col(fill = "steelblue") +
-  labs(title = "Lost Loop Anchors", x = "motif_id") +
-  theme_classic() +
-  theme(axis.text.x = element_text(angle = 60, hjust=1))
-  
-library(plotgardener)
-
-##make pdf
-pdf(file = "plots/known_motifEnrichment.pdf",
-    width = 10,
-    height = 7)
-
-  # Begin Visualization -----------------------------------------------------
-  ## Make page
-  pageCreate(width = 10, height = 7,
-             xgrid = 0, ygrid = 0, showGuides = F)
-
-  plotGG(top_ame_gained, 
-         x = 0.5,
-         y = 0.5,
-         width = 9,
-         height = 3)
-  
-  plotGG(top_ame_lost,
-         x = 0.5,
-         y = 3.5,
-         width = 9, 
-         height = 3)
-
-dev.off()
+genes <- genes(txdb)
+genes <- data.frame(genes)
+genes$seqnames <- paste0("chr", genes$seqnames)
+genes <- GRanges(seqnames = Rle(genes$seqnames), 
+                 ranges = IRanges(start = genes$start, end = genes$end), 
+                 strand = genes$strand,
+                 ensembl_gene_id = genes$gene_id)
 
 
+# HOMER/ monaLisa ---------------------------------------------------------
 
+# bin regions
+# - peak_change is a numerical vector
+# - peak_change needs to be created by the user to run this code
+peak_bins <- bin(x = peak_change, binmode = "equalN", nElement = 400)
 
-
-
+# calculate motif enrichments
+# - peak_seqs is a DNAStringSet, pwms is a PWMatrixList
+# - peak_seqs and pwms need to be created by the user to run this code
+se <- calcBinnedMotifEnrR(seqs = peak_seqs,
+                          bins = peak_bins,
+                          pwmL = pwms)
 
 

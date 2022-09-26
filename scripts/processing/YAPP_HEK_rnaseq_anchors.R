@@ -18,7 +18,7 @@ colData <-
 
 ## Use 0hr and 6hr time points 
 colData <- colData |> 
-  dplyr::filter(Time %in% c("0h", "6h"))
+  dplyr::filter(Time %in% c("0h", "1h"))
   
 ## Edit quant paths 
 colData$files <- paste0("data/raw/rna/output/quant/", colData$sn, "/quant.sf")

@@ -2,20 +2,20 @@ library(InteractionSet)
 
 diff_rnaseq <- readRDS("data/processed/rna/YAPP_HEK_rnaseq_anchors.rds")
 
-## Reading in loopsp
+## Reading in loops
 ## Read in data & format as GInteractions
 
 loops <- readRDS("data/processed/hic/YAPP_hic_diff_loopCounts.rds")
 
 ## separate loops into gained, lost, static
 gained <- loops |>
-  subset(padj < 0.01 & log2FoldChange > 0)
+  subset(padj < 0.1 & log2FoldChange > 0)
 
 lost <- loops |>
-  subset(padj < 0.01 & log2FoldChange < 0)
+  subset(padj < 0.1 & log2FoldChange < 0)
 
 static <- loops |>
-  subset(padj > 0.01)
+  subset(padj > 0.1)
 
 
 ## Find overlap between unique loop anchors
@@ -76,7 +76,7 @@ ggplot(
     panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
     panel.background = element_blank(), axis.line = element_line(colour = "black")
   ) +
-  labs(x = "Loop")
+  labs(x = "Loops")
 
 dev.copy(which = a)
 dev.off()
