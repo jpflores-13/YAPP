@@ -3,25 +3,28 @@ library(tidyverse)
 library(dbscan)
 library(InteractionSet)
 library(raster)
-#library(devtools)
 library(HiCcompare)
 library(hictoolsr)
-#library(terra)
+library(glue)
+library(hictoolsr)
 
-#wt_loops <- read.file("WT_5kbLoops.txt")
-#fs_loops <- read.file("FS_5kbLoops.txt")
-setwd("/Users/phanstiel2/MK/Work/")
+## loop upload and convert to GInteractions
+cond <- c("cont", "sorb", "omega")
+isDroso_loops <- list.files(path = glue("data/raw/hic/hg38/sip-loops/isDroso/{cond}"),
+                            full.names = T,
+                            pattern = "5kbLoops")
 
-## Merge loops and convert to GInteractions
+noDroso_loops <- list.files(path = glue("data/raw/hic/hg38/sip-loops/noDroso/{cond}"),
+                            full.names = T,
+                            pattern = "5kbLoops")
 
-loops <- mergeBedpe(bedpeFiles = c("WT_5kbLoops.txt", "FS_5kbLoops.txt"), res = 10e3) |> as_ginteractions()
-write.csv(loops,"loops")
-setwd("/Users/phanstiel2/MK/Work")
+bothDroso_loops <- c(isDroso_loops, noDroso_loops)
+
+## merge loops
+loops <- mergeBedpe(bedpeFiles = bothDroso_loops, res = 10e3) |> as_ginteractions()
 head(loops)
 
-#hicFiles = commandArgs(trailingOnly=TRUE)
-hicFiles[1]
-hicFiles <- c("GSM4259900_HEK_HiC_NUP_IDR_FS_A9_1_1_inter_30.hic")
+hicFiles <- c("data/raw/hic/hg38/220716_dietJuicerMerge_condition/sorb/YAPP_HEK_sorbitol_inter_30.hic")
 
 mh_index <- function(buffer, loop, inner){
   m=(buffer*2)+1
@@ -70,7 +73,7 @@ write.csv(normalized,"MH_obs_all.csv",quote=FALSE)
 
 #Convert data by setting 100 kb as 0 (subtract 100kb value from all values) and center pixel as 1 (divide all values to center pixel)
 zero=data.frame()
-for(i in 1:20){
+for(i in 1:length(loops_filtered)){
   for(j in 1:11){
     a <- normalized[i,1]-normalized[i,11]
     b <- normalized[i,j]-normalized[i,11]

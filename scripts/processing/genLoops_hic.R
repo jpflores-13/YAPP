@@ -26,7 +26,6 @@ bothDroso_loops <- c(isDroso_loops, noDroso_loops)
 
 hic_files <- list.files(path = glue("data/raw/hic/hg38/220722_dietJuicerCore/{cond}"), full.names = T)
 
-
 # Merge bedpe files into one and extract counts  --------------------------
 
 ## merge & convert to GInteractions

@@ -20,9 +20,13 @@ objects :=\
 	plots/YAPP_HEK_hic_gainedLoops_rect.pdf\
 	plots/YAPP_HEK_hic_lostLoops_rect.pdf\
 	plots/YAPP_HEK_hic_APA.pdf\
-	plots/YAPP_HEK_ATAC_anchors_boxplots.pdf\
+	plots/YAPP_HEK_atac_boxplots.pdf\
 	plots/YAPP_HEK_rnaseq_anchors_boxplots.pdf\
 	plots/known_motifEnrichment.pdf\
+	tables/atac/de_novo/gained/streme/promoter_gainedATAC_overlap.csv\
+	tables/hic/gainedLoop_promoter_overlaps.csv\
+	tables/hic/staticLoop_promoter_overlaps.csv\
+	tables/hic/lostLoop_promoter_overlaps.csv\
 	external/HYPE/data/processed/hic/HYPE_loopCounts.rds\
 	external/HYPE/data/processed/hic/HYPE_diff_loopCounts.rds\
 	external/HYPE/data/processed/hic/nacl_bothDroso_loops.rds\
@@ -36,7 +40,7 @@ objects :=\
 	vignettes/assets/HYPE_T47D_hic_APA.png\
 	vignettes/assets/YAPP_HEK_hic_APA.png\
 	vignettes/assets/YAPP_HEK_rnaseq_anchors_boxplots.png\
-	vignettes/assets/YAPP_HEK_ATAC_anchors_boxplots.png
+	vignettes/assets/YAPP_HEK_atac_boxplots.png
 
 all: $(objects)
 	echo done!
@@ -225,7 +229,7 @@ plots/YAPP_diffATAC_sorb_PCA.pdf:\
 		mkdir -p plots/
 		Rscript scripts/processing/diffATACpeaks.R
 		
-plots/YAPP_HEK_ATAC_anchors_boxplots.pdf:\
+plots/YAPP_HEK_atac_boxplots.pdf:\
 	data/processed/rna/YAPP_HEK_rnaseq_anchors.rds\
 	data/processed/atac/YAPP_hic_diff_ATACcounts.rds\
 	scripts/analysis/YAPP_HEK_atac_boxplots.R
@@ -237,8 +241,46 @@ data/processed/rna/YAPP_HEK_rnaseq_anchors.rds:\
 	scripts/processing/YAPP_HEK_rnaseq_anchors.R
 		mkdir -p data/processed/
 		Rscript scripts/processing/YAPP_HEK_rnaseq_anchors.R
-	
-vignettes/assets/YAPP_HEK_rnaseq_anchors_boxplots.png:\
 
-vignettes/assets/YAPP_HEK_ATAC_anchors_boxplots.png:\
+tables/atac/de_novo/gained/streme/promoter_gainedATAC_overlap.csv:\
+	data/processed/atac/YAPP_hic_diff_ATACcounts.rds\
+	data/processed/hic/YAPP_hic_diff_loopCounts.rds\
+	scripts/analysis/YAPP_HEK_atac_boxplots.R
+		mkdir -p tables/atac/
+		Rscript scripts/analysis/YAPP_HEK_promoter_overlaps.R
+
+tables/hic/gainedLoop_promoter_overlaps.csv:\
+	data/processed/atac/YAPP_hic_diff_ATACcounts.rds\
+	data/processed/hic/YAPP_hic_diff_loopCounts.rds\
+	scripts/analysis/YAPP_HEK_atac_boxplots.R
+		mkdir -p tables/atac/
+		Rscript scripts/analysis/YAPP_HEK_promoter_overlaps.R
+	
+tables/hic/staticLoop_promoter_overlaps.csv:\
+	data/processed/atac/YAPP_hic_diff_ATACcounts.rds\
+	data/processed/hic/YAPP_hic_diff_loopCounts.rds\
+	scripts/analysis/YAPP_HEK_atac_boxplots.R
+		mkdir -p tables/atac/
+		Rscript scripts/analysis/YAPP_HEK_promoter_overlaps.R
+	
+tables/hic/lostLoop_promoter_overlaps.csv:\
+	data/processed/atac/YAPP_hic_diff_ATACcounts.rds\
+	data/processed/hic/YAPP_hic_diff_loopCounts.rds\
+	scripts/analysis/YAPP_HEK_atac_boxplots.R
+		mkdir -p tables/atac/
+		Rscript scripts/analysis/YAPP_HEK_promoter_overlaps.R
+
+vignettes/assets/YAPP_HEK_rnaseq_anchors_boxplots.png:\
+	data/processed/rna/YAPP_HEK_rnaseq_anchors.rds\
+	data/processed/hic/YAPP_hic_diff_loopCounts.rds\
+	scripts/analysis/YAPP_HEK_rnaseq_anchors_boxplots.R
+		mkdir -p vignettes/assets/
+		Rscript scripts/analysis/YAPP_HEK_rnaseq_anchors_boxplots.R
+
+vignettes/assets/YAPP_HEK_atac_boxplots.png:\
+	data/processed/rna/YAPP_HEK_rnaseq_anchors.rds\
+	data/processed/atac/YAPP_hic_diff_ATACcounts.rds\
+	scripts/analysis/YAPP_HEK_atac_boxplots.R
+		mkdir -p vignettes/assets/
+		Rscript scripts/analysis/YAPP_HEK_atac_boxplots.R
 

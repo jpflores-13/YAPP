@@ -49,13 +49,13 @@ combined <- bind_rows(combined1, static_df)
 library(ggplot2)
 
 pdf(
-  file = "plots/YAPP_HEK_ATAC_anchors_boxplots.pdf",
+  file = "plots/YAPP_HEK_atac_boxplots.pdf",
   height = 3,
   width = 4.5
 )
 a <- dev.cur()
 png(
-  file = "vignettes/assets/YAPP_HEK_ATAC_anchors_boxplots.png",
+  file = "vignettes/assets/YAPP_HEK_atac_boxplots.png",
   height = 3,
   width = 4.5
 )
