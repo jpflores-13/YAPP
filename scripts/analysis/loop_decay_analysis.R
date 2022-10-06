@@ -5,24 +5,28 @@ library(ggplot2)
 
 normalized1_gained <- readRDS("data/processed/hic/gained_normalized_mh_index.rds")
 ## convert to dataframe
+Group_gained <- factor(0:10)
 Mean_gained <- as.vector(colMeans(normalized1_gained))
 df_gained <- data.frame(Group_gained,Mean_gained)
 df_gained
 
 normalized1_nullSet <- readRDS("data/processed/hic/nullSet_cont_normalized_mh_index.rds")
 ## convert to dataframe
+Group_nullSet <- factor(0:10)
 Mean_nullSet <- as.vector(colMeans(normalized1_nullSet))
 df_nullSet <- data.frame(Group_nullSet,Mean_nullSet)
 df_nullSet
 
 normalized1_control <- readRDS("data/processed/hic/cont_normalized_unfiltered_mh_index.rds")
 ## convert to dataframe
+Group_control <- factor(0:10)
 Mean_control <- as.vector(colMeans(normalized1_control))
 df_control <- data.frame(Group_control,Mean_control)
 df_control
 
 normalized1_lost <- readRDS("data/processed/hic/lost_normalized_mh_index.rds")
 ## convert to dataframe
+Group_lost <- factor(0:10)
 Mean_lost<- as.vector(colMeans(normalized1_lost))
 df_lost <- data.frame(Group_lost, Mean_lost)
 df_lost

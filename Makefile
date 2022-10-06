@@ -339,13 +339,3 @@ plots/loop_decay_plot.pdf:\
 	scripts/analysis/loop_decay_analysis.R
 		mkdir -p  plots/
 		Rscript scripts/analysis/loop_decay_analysis.R
-	
-
-
-
-
-
-
-
-
-

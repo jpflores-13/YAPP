@@ -8,12 +8,19 @@ library(glue)
 library(hictoolsr)
 library(mariner)
 library(plyranges)
+library(nullranges)
 
 ## load function from utils folder
 source("scripts/utils/mh_index.R")
 
 ## loop upload
 all_loops <- readRDS("data/processed/hic/YAPP_hic_diff_loopCounts.rds")
+
+gained_loops <- all_loops |> 
+  subset(padj < 0.1 & log2FoldChange > 0)
+
+lost_loops <- all_loops |> 
+  subset(padj < 0.1 & log2FoldChange < 0)
 
 ## create metadata columns for contact frequency & size 
 mcols(all_loops)$loop_size <- pairdist(all_loops)
@@ -170,4 +177,3 @@ colnames(zero_nullSet) <- c("0","1","2","3","4","5","6","7","8","9","10")
 Group_nullSet<- factor(0:10)
 normalized1_nullSet <- na.omit(zero_nullSet)
 saveRDS(normalized1_nullSet, "data/processed/hic/nullSet_cont_normalized_mh_index.rds")
-
