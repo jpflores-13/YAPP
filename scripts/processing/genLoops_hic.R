@@ -21,6 +21,7 @@ noDroso_loops <- list.files(path = glue("data/raw/hic/hg38/sip-loops/noDroso/{co
                             pattern = "5kbLoops")
 
 bothDroso_loops <- c(isDroso_loops, noDroso_loops)
+saveRDS(bothDroso_loops, "data/processed/hic/combined_cond_bothDroso_loops.rds")
 
 # Provide .hic files to extract from --------------------------------------
 

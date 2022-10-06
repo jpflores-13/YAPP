@@ -7,6 +7,11 @@ objects :=\
 	data/processed/hic/sorb_bothDroso_loops.rds\
 	data/processed/hic/cont_bothDroso_loops.rds\
 	data/processed/hic/omega_bothDroso_loops.rds\
+	data/processed/hic/combined_cond_bothDroso_loops.rds\
+	data/processed/hic/gained_normalized_mh_index.rds\
+	data/processed/hic/lost_normalized_mh_index.rds\
+	data/processed/hic/cont_normalized_mh_index.rds\
+	data/processed/hic/nullSet_cont_normalized_mh_index.rds\
 	data/processed/rna/YAPP_HEK_rnaseq_anchors.rds\
 	data/processed/rna/gainedLoop_genes.txt\
 	data/processed/atac/YAPP_hic_diff_ATACcounts.rds\
@@ -23,6 +28,7 @@ objects :=\
 	plots/YAPP_HEK_atac_boxplots.pdf\
 	plots/YAPP_HEK_rnaseq_anchors_boxplots.pdf\
 	plots/known_motifEnrichment.pdf\
+	plots/loop_decay_plot.pdf\
 	tables/atac/de_novo/gained/streme/promoter_gainedATAC_overlap.csv\
 	tables/hic/gainedLoop_promoter_overlaps.csv\
 	tables/hic/staticLoop_promoter_overlaps.csv\
@@ -283,4 +289,63 @@ vignettes/assets/YAPP_HEK_atac_boxplots.png:\
 	scripts/analysis/YAPP_HEK_atac_boxplots.R
 		mkdir -p vignettes/assets/
 		Rscript scripts/analysis/YAPP_HEK_atac_boxplots.R
+		
+data/processed/hic/combined_cond_bothDroso_loops.rds:\
+	scripts/analysis/YAPP_HEK_rnaseq_anchors_boxplots.R
+		mkdir -p data/processed/hic/
+		Rscript scripts/analysis/YAPP_HEK_rnaseq_anchors_boxplots.R
+		
+data/processed/hic/gained_normalized_mh_index.rds:\
+	scripts/utils/mh_index.R\
+	data/processed/hic/YAPP_hic_diff_loopCounts.rds\
+	data/raw/hic/hg38/220716_dietJuicerMerge_condition/sorb/YAPP_HEK_sorbitol_inter_30.hic\
+	data/raw/hic/hg38/220716_dietJuicerMerge_condition/cont/YAPP_HEK_control_inter_30.hic\
+	scripts/processing/loop_decay_processing.R
+		mkdir -p data/processed/hic
+		Rscript scripts/processing/loop_decay_processing.R
+	
+data/processed/hic/lost_normalized_mh_index.rds:\
+	scripts/utils/mh_index.R\
+	data/processed/hic/YAPP_hic_diff_loopCounts.rds\
+	data/raw/hic/hg38/220716_dietJuicerMerge_condition/sorb/YAPP_HEK_sorbitol_inter_30.hic\
+	data/raw/hic/hg38/220716_dietJuicerMerge_condition/cont/YAPP_HEK_control_inter_30.hic\
+	scripts/processing/loop_decay_processing.R
+		mkdir -p data/processed/hic
+		Rscript scripts/processing/loop_decay_processing.R
+	
+data/processed/hic/cont_normalized_mh_index.rds:\
+	scripts/utils/mh_index.R\
+	data/processed/hic/YAPP_hic_diff_loopCounts.rds\
+	data/raw/hic/hg38/220716_dietJuicerMerge_condition/sorb/YAPP_HEK_sorbitol_inter_30.hic\
+	data/raw/hic/hg38/220716_dietJuicerMerge_condition/cont/YAPP_HEK_control_inter_30.hic\
+	scripts/processing/loop_decay_processing.R
+		mkdir -p data/processed/hic
+		Rscript scripts/processing/loop_decay_processing.R
+	
+data/processed/hic/nullSet_cont_normalized_mh_index.rds:\
+	scripts/utils/mh_index.R\
+	data/processed/hic/YAPP_hic_diff_loopCounts.rds\
+	data/raw/hic/hg38/220716_dietJuicerMerge_condition/sorb/YAPP_HEK_sorbitol_inter_30.hic\
+	data/raw/hic/hg38/220716_dietJuicerMerge_condition/cont/YAPP_HEK_control_inter_30.hic\
+	scripts/processing/loop_decay_processing.R
+		mkdir -p data/processed/hic
+		Rscript scripts/processing/loop_decay_processing.R
+
+plots/loop_decay_plot.pdf:\
+	data/processed/hic/gained_normalized_mh_index.rds\
+	data/processed/hic/nullSet_cont_normalized_mh_index.rds\
+	data/processed/hic/cont_normalized_unfiltered_mh_index.rds\
+	data/processed/hic/lost_normalized_mh_index.rds\
+	scripts/analysis/loop_decay_analysis.R
+		mkdir -p  plots/
+		Rscript scripts/analysis/loop_decay_analysis.R
+	
+
+
+
+
+
+
+
+
 
