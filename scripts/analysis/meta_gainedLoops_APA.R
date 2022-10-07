@@ -6,6 +6,7 @@ library(hictoolsr)
 library(GenomeInfoDb)
 library(RColorBrewer)
 library(plotgardener)
+library(org.Hs.eg.db)
 
 # Load in all loops -------------------------------------------------------
 diff_loopCounts <- readRDS("data/processed/hic/YAPP_hic_diff_loopCounts.rds")

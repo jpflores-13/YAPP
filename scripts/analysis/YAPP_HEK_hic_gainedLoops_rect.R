@@ -10,6 +10,7 @@ library(tidyverse)
 library(glue)
 library(dbscan)
 library(data.table)
+library(org.Hs.eg.db)
 
 diff_loopCounts <- readRDS("data/processed/hic/YAPP_hic_diff_loopCounts.rds")
 

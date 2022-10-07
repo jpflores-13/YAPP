@@ -1,5 +1,4 @@
 library(strawr)
-library(tidyverse)
 library(dbscan)
 library(InteractionSet)
 library(raster)
@@ -9,6 +8,7 @@ library(hictoolsr)
 library(mariner)
 library(plyranges)
 library(nullranges)
+library(tidyverse)
 
 ## load function from utils folder
 source("scripts/utils/mh_index.R")
@@ -33,7 +33,6 @@ mcols(all_loops)$loop_type <- case_when(
 ## contact frequency
 mcols(all_loops)$sorb_contacts <- mcols(all_loops)$YAPP_HEK_sorbitol_4_2_inter_30.hic +
   mcols(all_loops)$YAPP_HEK_sorbitol_5_2_inter_30.hic + mcols(all_loops)$YAPP_HEK_sorbitol_6_2_inter_30.hic
-  
 
 ## use matchRanges to select a null set of control sample loops that is matched for size & contact frequency
 nullSet <- matchRanges(focal = all_loops[mcols(all_loops)$loop_type == "gained"],
