@@ -6,7 +6,6 @@
 library(hictoolsr)
 library(glue)
 library(dbscan)
-library(tidyverse)
 library(GenomeInfoDb)
 
 # Compile loop files of interest ------------------------------------------
