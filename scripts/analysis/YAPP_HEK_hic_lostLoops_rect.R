@@ -56,7 +56,7 @@ omega_loops <- readRDS("data/processed/hic/omega_bothDroso_loops.rds")
 
 ##make pdf
 pdf(file = "plots/YAPP_HEK_hic_lostLoops_rect.pdf",
-    width = 7,
+    width = 5.75,
     height = 8)
 
 ## Loop through each region
@@ -80,107 +80,135 @@ for(i in 1:nrow(loopRegions_lost)){
   
   # Begin Visualization -----------------------------------------------------
   ## Make page
-  pageCreate(width = 7, height = 8,
+  pageCreate(width = 5.75, height = 8,
              xgrid = 0, ygrid = 0, showGuides = F)
   
-  ## Plot top omega Hi-C rectangle + annotate
-  omega <- 
-    plotHicRectangle(data = "data/raw/hic/hg38/220716_dietJuicerMerge_omega/YAPP_HEK_inter_30.hic", 
-                     params = p,
-                     y = 0.5)
-    
-  annoPixels(omega, data = omega_loops,
-             type = "arrow",
-             shift = 0.5)
+  ## Plot middle Hi-C rectangle + SIP `-isDroso = TRUE` & `-isDroso = TRUE` calls 
   
-  ## Plot middle Hi-C rectangle 
+  control <- plotHicRectangle(data = "data/raw/hic/hg38/220716_dietJuicerMerge_condition/cont/YAPP_HEK_control_inter_30.hic",
+                              params = p,
+                              y = 0.5)
   
-  control <-
-    plotHicRectangle(data = "data/raw/hic/hg38/220716_dietJuicerMerge_condition/cont/YAPP_HEK_control_inter_30.hic",
-                     params = p,
-                     y = 2.75)
+  annoHeatmapLegend(control, orientation = "v",
+                    fontsize = 8,
+                    fontcolor = "black",
+                    digits = 2,
+                    x = 5.5,
+                    y = 0.5,
+                    width = 0.1,
+                    height = 1.5,
+                    just = c("left", "top"),
+                    default.units = "inches")
   
-  ## annotate all pixels called with both `-isDroso true` and `-isDroso false` parameters
-  annoPixels(control, data = omega_loops,
-             shift = 0.5, 
-             type = "arrow",
-             col = "black")
-  
-  ## annotate all pixels called with `-isDroso true`
-  annoPixels(control, data = "data/raw/hic/hg38/sip-loops/isDroso/cont/5kbLoops.txt",
+  annoPixels(control,
+             data = cont_loops,
              shift = 0.5,
-             col = "green")
-  
-  ## annotate all pixels called with `-isDroso false`
-  annoPixels(control, data = "data/raw/hic/hg38/sip-loops/noDroso/cont/5kbLoops.txt",
              type = "arrow",
-             shift = 0.5, 
-             col = "red")
+             col = "#005AB5")
   
-  ## Plot bottom Hi-C rectangle 
+  ## Plot bottom Hi-C rectangle + SIP `-isDroso = TRUE` & `-isDroso = TRUE` calls
   
   sorb <- 
     plotHicRectangle(data = "data/raw/hic/hg38/220716_dietJuicerMerge_condition/sorb/YAPP_HEK_sorbitol_inter_30.hic", 
                      params = p,
-                     y = 5) 
+                     y = 2.6)
   
-  ## annotate all pixels called with both `-isDroso true` and `-isDroso false` parameters
-  annoPixels(sorb, data = omega_loops,
-             type = "arrow",
-             shift = 0.5)
+  annoHeatmapLegend(sorb, orientation = "v",
+                    fontsize = 8,
+                    fontcolor = "black",
+                    digits = 2,
+                    x = 5.5,
+                    y = 2.6,
+                    width = 0.1,
+                    height = 1.5,
+                    just = c("left", "top"),
+                    default.units = "inches")
   
-  ## annotate all pixels called with `-isDroso true`
-  annoPixels(sorb, data = "data/raw/hic/hg38/sip-loops/isDroso/sorb/5kbLoops.txt",
+  annoPixels(sorb, data = cont_loops,
              shift = 0.5,
              type = "arrow",
-             col = "green")
+             col = "#DC3220")
   
-  ## annotate all pixels called with `-isDroso false`
-  annoPixels(sorb, data = "data/raw/hic/hg38/sip-loops/noDroso/sorb/5kbLoops.txt",
-             shift = 0.5, 
-             type = "arrow",
-             col = "red")
+  ## Plot control ATAC track
+  plotSignal(param = p,
+             data = "data/raw/atac/output/mergeSignal/YAPP_HEK_cont_0h.bw",
+             x = 0.25,
+             y = 4.7,
+             height = 0.5)
+  
+  ## Plot sorbitol ATAC track
+  plotSignal(param = p,
+             data = "data/raw/atac/output/mergeSignal/YAPP_HEK_sorb_1h.bw",
+             x = 0.25,
+             y = 5.3,
+             height = 0.5)
+  
+  ## Plot control RNA-seq
+  plotSignal(param = p,
+             data = "data/raw/rna/output/signal/YAPP_HEK_cont_0h_1_1.bw",
+             x = 0.25,
+             y = 5.9,
+             linecolor = "#abcc8e",
+             height = 0.5)
+  
+  ## Plot sorbitol RNA-seq
+  plotSignal(param = p,
+             data = "data/raw/rna/output/signal/YAPP_HEK_sorb_1h_1_1.bw",
+             x = 0.25,
+             y = 6.5,
+             linecolor = "#abcc8e",
+             height = 0.5)
   
   ## Plot genes
   plotGenes(param = p,
             chrom = p$chrom,
             x = 0.25,
-            y = 7.25,
+            y = 7.1,
             height = 0.5)
   
   ## Plot genome label
   plotGenomeLabel(params = p,
                   x = 0.25,
-                  y = 7.75)
+                  y = 7.7)
   
   # Annotate Hi-C rectangles by treatment ------------------------------------
   
-  plotText(label = "omega",
+  plotText(label = "untreated",
            x = 0.25,
-           y = 0.35,
+           y = 0.5,
            just = c("top", "left"))
   
-  plotText(label = "control",
+  plotText(label = "+ sorbitol",
            x = 0.25,
            y = 2.6,
            just = c("top", "left"))
   
-  plotText(label = "sorbitol",
+  plotText(label = "untreated - ATAC",
            x = 0.25,
-           y = 4.85,
+           y = 4.65,
+           fontcolor = "#1d91c0",
+           fontsize = 8,
            just = c("top", "left"))
   
-  plotLegend(legend = c("-isDroso true", "-isDroso false", "omega loops"),
-             fill = c("green", "red", "black"),
-             border = FALSE,
-             x = 5.5, y = 3, width = 1.5, height = 0.7,
-             just = c("left", "top"),
-             default.units = "inches")
+  plotText(label = "+ sorbitol - ATAC",
+           x = 0.25,
+           y = 5.25,
+           fontsize = 8,
+           fontcolor = "#1d91c0",
+           just = c("top", "left"))
   
-  plotText(label = sprintf("Lost YAPP Loop %s", i),
-           x = 2.75,
-           y = 0.1,
-           just = c("center", "top"))
+  plotText(label = "untreated - RNA",
+           x = 0.25,
+           y = 5.85,
+           fontsize = 8,
+           fontcolor = "#abcc8e",
+           just = c("top", "left"))
   
+  plotText(label = "+ sorbitol - RNA",
+           x = 0.25,
+           y = 6.45,
+           fontsize = 8,
+           fontcolor = "#abcc8e",
+           just = c("top", "left"))
 }
 dev.off()

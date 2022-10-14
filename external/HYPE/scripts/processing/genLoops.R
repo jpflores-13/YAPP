@@ -1,4 +1,4 @@
-## Generate loop counts/ call loops for cont/sorb HEK293 cells processed with `-isDroso` parameter
+## Generate loop counts/ call loops for cont/nacl T47D cells 
 
 ## install github
 # remotes::install_github("EricSDavis/hictoolsr")

@@ -31,7 +31,7 @@ hic_files <- list.files(path = glue("data/raw/hic/hg38/220722_dietJuicerCore/{co
 ## merge & convert to GInteractions
 mergedLoops <- 
   mergeBedpe(bedpeFiles = bothDroso_loops,
-             res = 10000) |> 
+             res = 10e3) |> 
   as_ginteractions()
 
 ## rename seqstyles level
@@ -52,6 +52,7 @@ loopCounts <- extractCounts(bedpe = mergedLoops,
 
 # save data -----------------------------
 saveRDS(loopCounts, file = "data/processed/hic/YAPP_hic_loopCounts.rds")
+
 
 ## save sessionInfo()
 sessionInfo()

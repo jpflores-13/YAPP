@@ -38,19 +38,18 @@ mcols(all_loops)$loop_size <- mcols(all_loops)$loop_size + 1
 mcols(all_loops)$sorb_contacts <- mcols(all_loops)$sorb_contacts + 1
 mcols(all_loops)$loop_size <- log(mcols(all_loops)$loop_size)
 mcols(all_loops)$sorb_contacts <- log(mcols(all_loops)$sorb_contacts)
+
 ## use matchRanges to select a null set of control sample loops that is matched for size & contact frequency
 nullSet <- matchRanges(focal = all_loops[all_loops$loop_type == "gained"],
                        pool = all_loops[!all_loops$loop_type == "gained"],
                        covar = ~ sorb_contacts + loop_size, 
-                       method = 'nearest',
-                       replace = T)
+                       method = 'stratified',
+                       replace = F)
 
-saveRDS(nullSet, "data/processed/hic/")
+saveRDS(nullSet, "data/processed/hic/loop_decay_nullSet_boxcox_stratified.rds")
+plotCovariate(nullSet)
 plotCovariate(nullSet, covar = "loop_size")
-plotPropensity(nullSet, sets = c('f', 'p', 'm'))
 plotPropensity(nullSet, sets = c('f', 'p', 'm'), log = 'x')
-ov <- overview(nullSet)
-ov$quality
 
 ## bring in merged sorbitol .hic file 
 sorb_hic <- "data/raw/hic/hg38/220716_dietJuicerMerge_condition/sorb/YAPP_HEK_sorbitol_inter_30.hic"

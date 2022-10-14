@@ -99,7 +99,7 @@ for(i in 1:nrow(loopRegions_gained)){
                     default.units = "inches")
   
   annoPixels(control,
-             data = cont_loops,
+             data = sorb_loops,
              shift = 0.5,
              type = "arrow",
              col = "#005AB5")
